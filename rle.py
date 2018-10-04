@@ -12,6 +12,9 @@ from skimage.transform import resize
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--source_folder", default="data/output")
+parser.add_argument("--image_height", default=101)
+parser.add_argument("--image_width", default=101)
+parser.add_argument("--csv", default="./output.csv")
 
 def RLenc(img, order='F', format=True):
     bytes = img.reshape(img.shape[0] * img.shape[1], order=order)
@@ -46,14 +49,14 @@ def RLenc(img, order='F', format=True):
 def main():
     FLAGS = parser.parse_args()
     pred_ids = next(os.walk(FLAGS.source_folder))[2]
-    preds = np.zeros((len(pred_ids), 101, 101), dtype=np.uint8)
+    preds = np.zeros((len(pred_ids), FLAGS.image_width, FLAGS.image_width), dtype=np.uint8)
     
-    print("Resizing " + str(len(pred_ids)) + " images...")
+    print("Resizing " + str(len(pred_ids)) + " images to " + str(FLAGS.image_width) + " by "  + str(FLAGS.image_height) + "...")
     for i, id_ in enumerate(pred_ids):
         path = FLAGS.source_folder
         img = image.load_img(path + '/' +  id_)
         x = image.img_to_array(img)[:,:,1]
-        x = resize(x, (101, 101), mode='constant', preserve_range=True)
+        x = resize(x, (FLAGS.image_width, FLAGS.image_height), mode='constant', preserve_range=True)
         preds[i] = x
         if i % (len(pred_ids)/5) == 0 and i != 0:
             print("Resized " + str(i) + " images [" + str(100*i/len(pred_ids)) + "%]")
@@ -71,8 +74,8 @@ def main():
     sub = pd.DataFrame.from_dict(pred_dict,orient='index')
     sub.index.names = ['id']
     sub.columns = ['rle_mask']
-    sub.to_csv('submission.csv')
-    print("Submission saved to ./submission.csv")
+    sub.to_csv(FLAGS.csv)
+    print("Submission saved to " + FLAGS.csv)
 
 if __name__ == "__main__":
     main()
