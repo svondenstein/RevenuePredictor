@@ -7,7 +7,7 @@ import tensorflow as tf
 
 def _parse_data_infer(image_paths):
     image_content = tf.read_file(image_paths)
-    images = tf.image.decode_png(image_content, channels=3)
+    images = tf.image.decode_png(image_content, channels=1)
 
     return images
 
@@ -47,7 +47,7 @@ def _resize_data(image, mask):
 def _parse_data(image_paths, mask_paths):
     """Reads image and mask files"""
     image_content = tf.read_file(image_paths)
-    images = tf.image.decode_png(image_content, channels=3)
+    images = tf.image.decode_png(image_content, channels=1)
 
     mask_content = tf.read_file(mask_paths)
     masks = tf.image.decode_png(mask_content, channels=1)
@@ -55,7 +55,7 @@ def _parse_data(image_paths, mask_paths):
     return images, masks
 
 
-def data_batch(image_paths, mask_paths, batch_size=4, augment=False, num_threads=2):
+def data_batch(image_paths, mask_paths, batch_size, augment=False, num_threads=2):
     """Reads data, normalizes it, shuffles it, then batches it, returns a
        the next element in dataset op and the dataset initializer op.
        Inputs:

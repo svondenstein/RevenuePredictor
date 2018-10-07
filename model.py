@@ -291,7 +291,7 @@ class DenseTiramisu(object):
             val_image_paths, val_mask_paths, batch_size)
         eval_image_tensor, eval_mask_tensor = eval_data
 
-        image_ph = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
+        image_ph = tf.placeholder(tf.float32, shape=[None, 256, 256, 1])
         mask_ph = tf.placeholder(tf.int32, shape=[None, 256, 256, 1])
         training = tf.placeholder(tf.bool, shape=[])
 
@@ -371,7 +371,7 @@ class DenseTiramisu(object):
         image_paths = [os.path.join(image_dir, x) for x in os.listdir(image_dir) if x.endswith('.png') or x.endswith('.jpg')]
         infer_data, infer_queue_init = utility.data_batch(
             image_paths, None, batch_size)
-        image_ph = tf.placeholder(tf.float32, shape=[None, 256, 256, 3])
+        image_ph = tf.placeholder(tf.float32, shape=[None, 256, 256, 1])
         training = tf.placeholder(tf.bool, shape=[])
 
         if not self.logits:
@@ -383,7 +383,7 @@ class DenseTiramisu(object):
         with tf.Session() as sess:
             saver.restore(sess, ckpt)
             sess.run(infer_queue_init)
-            for iterat in range(len(image_paths)): #// batch_size):
+            for iterat in range(len(image_paths)):
                 image = sess.run(infer_data)
                 feed_dict = {
                     image_ph: image,
@@ -391,9 +391,6 @@ class DenseTiramisu(object):
                 }
                 prediction = sess.run(mask, feed_dict)
                 print("Batch ",iterat," complete") 
-               # for j in range(batch_size):
-                   # print("j: " + str(j))
-               # pathn = image_paths[iterat*batch_size+j]
                 pathn = image_paths[iterat]
                 pathn = pathn.split('/')[-1]
                 predictionMask = 255 * prediction[ :, :]

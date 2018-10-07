@@ -42,7 +42,7 @@ def main():
         tiramisu.train(FLAGS.train_data, FLAGS.val_data, FLAGS.ckpt,
         FLAGS.batch_size, FLAGS.epochs, FLAGS.learning_rate, FLAGS.prior_model)
     elif FLAGS.mode == 'infer':
-        tiramisu.infer(FLAGS.infer_data, FLAGS.batch_size, FLAGS.ckpt, FLAGS.output_folder)
+        tiramisu.infer(FLAGS.infer_data, 1, FLAGS.ckpt, FLAGS.output_folder)
 
 
 if __name__ == "__main__":
