@@ -44,7 +44,7 @@ Using the default arguments:
 - _train/_: a directory containing training images and masks. Should contain two subdirectories: _images/_ and _masks/_, containing training images and training masks, respectively.
 2. Run the program using the default arguments: `python main.py --mode=train`
 
-To use different training parameters, please consult the argument definitions section of the README.
+To use different training parameters, please consult the [argument definitions](#argument-definitions) section of the README.
 
 ### Inference
 
@@ -55,7 +55,7 @@ Using the default arguments:
 - _predictions/_: an empty directory to contain predicted masks
 2. Run the program using the default arguments: `python main.py --mode=infer`
 
-To use different inference parameters, please consult the argument definitions section of the README.
+To use different inference parameters, please consult the [argument definitions](#argument-definitions) section of the README.
 
 ### Kaggle Only - Computing RLE and Assembling Submission
 
@@ -65,7 +65,7 @@ Using the default arguments:
 - _predictions/_: a directories containing the predicted masks
 2. Run the program using the default arguments: `python rle.py`
 
-To use different submission parameters, please consult the argument definitions section of the README.
+To use different submission parameters, please consult the [argument definitions](#argument-definitions) section of the README.
 
 ## Argument Definitions
 
