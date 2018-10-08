@@ -291,8 +291,8 @@ class DenseTiramisu(object):
             val_image_paths, val_mask_paths, batch_size)
         eval_image_tensor, eval_mask_tensor = eval_data
 
-        image_ph = tf.placeholder(tf.float32, shape=[None, 256, 256, 1])
-        mask_ph = tf.placeholder(tf.int32, shape=[None, 256, 256, 1])
+        image_ph = tf.placeholder(tf.float32, shape=[None, 128, 128, 1])
+        mask_ph = tf.placeholder(tf.int32, shape=[None, 128, 128, 1])
         training = tf.placeholder(tf.bool, shape=[])
 
         if not self.logits:
@@ -371,7 +371,7 @@ class DenseTiramisu(object):
         image_paths = [os.path.join(image_dir, x) for x in os.listdir(image_dir) if x.endswith('.png') or x.endswith('.jpg')]
         infer_data, infer_queue_init = utility.data_batch(
             image_paths, None, batch_size)
-        image_ph = tf.placeholder(tf.float32, shape=[None, 256, 256, 1])
+        image_ph = tf.placeholder(tf.float32, shape=[None, 128, 128, 1])
         training = tf.placeholder(tf.bool, shape=[])
 
         if not self.logits:

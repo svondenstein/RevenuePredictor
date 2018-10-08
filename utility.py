@@ -20,7 +20,7 @@ def _normalize_data_infer(image):
 
 
 def _resize_data_infer(image):
-    image = tf.image.resize_images(image, [256, 256])
+    image = tf.image.resize_images(image, [128, 128])
 
     return image
 
@@ -38,8 +38,8 @@ def _normalize_data(image, mask):
 
 def _resize_data(image, mask):
     """Resizes images to smaller dimensions."""
-    image = tf.image.resize_images(image, [256, 256])
-    mask = tf.image.resize_images(mask, [256, 256])
+    image = tf.image.resize_images(image, [128, 128])
+    mask = tf.image.resize_images(mask, [128, 128])
 
     return image, mask
 
