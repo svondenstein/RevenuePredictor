@@ -10,7 +10,9 @@ This program identifies Salt Deposits by analyzing subsurface images. The networ
 ## Table of Contents
 
 [Data](#data)
+
 [Model](#model)
+
 [Running Locally](#running-locally)
 * [Training](#training)
 * [Inference](#inference)
