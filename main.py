@@ -10,17 +10,17 @@ from model import DenseTiramisu
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--mode", default="infer")
-parser.add_argument("--train_data", default="data/training",
+parser.add_argument("--train_data", default="train",
                     help="Directory for training images")
-parser.add_argument("--val_data", default="data/validation",
+parser.add_argument("--val_data", default="train",
                     help="Directory for validation images")
-parser.add_argument("--ckpt", default="models/model.ckpt",
+parser.add_argument("--ckpt", default="checkpoints/model.ckpt",
                     help="Directory for storing model checkpoints")
-parser.add_argument("--layers_per_block", default="2,3,3",
+parser.add_argument("--layers_per_block", default="4,5,7,10,12,15",
                     help="Number of layers in dense blocks")
-parser.add_argument("--batch_size", default=8,
+parser.add_argument("--batch_size", default=4,
                     help="Batch size for use in training", type=int)
-parser.add_argument("--epochs", default=5,
+parser.add_argument("--epochs", default=12,
                     help="Number of epochs for training", type=int)
 parser.add_argument("--num_threads", default=2,
                     help="Number of threads to use for data input pipeline", type=int)
@@ -28,8 +28,8 @@ parser.add_argument("--growth_k", default=16, help="Growth rate for Tiramisu", t
 parser.add_argument("--num_classes",   default=2, help="Number of classes", type=int)
 parser.add_argument("--learning_rate", default=1e-4,
                     help="Learning rate for optimizer", type=float)
-parser.add_argument("--infer_data", default="data/infer")
-parser.add_argument("--output_folder", default="data/output")
+parser.add_argument("--infer_data", default="test")
+parser.add_argument("--output_folder", default="predictions")
 parser.add_argument("--prior_model", default="")
 
 
