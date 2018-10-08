@@ -14,7 +14,7 @@ This program identifies Salt Deposits by analyzing subsurface images. The networ
 [Running Locally](#running-locally)
 * [Training](#training)
 * [Inference](#inference)
-* [Submitting to Kaggle](#kaggle-only---computing-rle-and-assembling-submission)
+* [Submitting to Kaggle](#kaggle-only)
 [Argument List](#argument-definitions)
 [Licensing](#licensing)
 
@@ -78,7 +78,7 @@ _**main.py**_:
 | `--epochs` | Number of epochs to train | 12 |
 | `--num_threads` | Number of threads to use for the data input pipeline | 2 |
 | `--growth_k` | Growth rate for Tiramisu | 16 |
-| `--num_classes` | Number of classes  ||
+| `--num_classes` | Number of classes to predict | 2 |
 | `--learning_rate` | Learning rate for optimizer | 1e-4 |
 | `--infer_data` | Path to testing data to make predictions for | ./test/ |
 | `--output_folder` | Path to save predicted masks | ./predictions/ |
