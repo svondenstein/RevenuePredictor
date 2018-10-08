@@ -17,6 +17,7 @@ This program identifies Salt Deposits by analyzing subsurface images. The networ
 * [Submitting to Kaggle](#kaggle-only)
 
 [Argument List](#argument-definitions)
+
 [Licensing](#licensing)
 
 ## Data
