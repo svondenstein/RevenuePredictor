@@ -15,6 +15,7 @@ This program identifies Salt Deposits by analyzing subsurface images. The networ
 * [Training](#training)
 * [Inference](#inference)
 * [Submitting to Kaggle](#kaggle-only)
+
 [Argument List](#argument-definitions)
 [Licensing](#licensing)
 
@@ -70,9 +71,9 @@ _**main.py**_:
 | Argument | Definition | Default Value |
 | --- | --- | --- |
 | `--mode` | Execution mode - may be "train" or "infer" | infer |
-| `--train_data` | Path to training data - must contain subdirectories _images/_ and _masks/_ | ./train/ |
-| `--val_data` | Path to validation data - must contain subdirectories _images/_ and _masks/_ | ./train/ |
-| `--ckpt` | Path to directory to store checkpoints & model parameters | ./checkpoints/model.ckpt |
+| `--train_data` | Path to training data - must contain subdirectories _images/_ and _masks/_ | _./train/_ |
+| `--val_data` | Path to validation data - must contain subdirectories _images/_ and _masks/_ | _./train/_ |
+| `--ckpt` | Path to directory to store checkpoints & model parameters | _./checkpoints/model.ckpt_ |
 | `--layers_per_block` | Number of layers per dense block in the model | 4,5,6,10,12,15 |
 | `--batch_size` | Batch size for use in training | 4 |
 | `--epochs` | Number of epochs to train | 12 |
@@ -80,9 +81,9 @@ _**main.py**_:
 | `--growth_k` | Growth rate for Tiramisu | 16 |
 | `--num_classes` | Number of classes to predict | 2 |
 | `--learning_rate` | Learning rate for optimizer | 1e-4 |
-| `--infer_data` | Path to testing data to make predictions for | ./test/ |
-| `--output_folder` | Path to save predicted masks | ./predictions/ |
-| `--prior_model` | Path to model to continue training (optional) | _none_ |
+| `--infer_data` | Path to testing data to make predictions for | _./test/_ |
+| `--output_folder` | Path to save predicted masks | _./predictions/_ |
+| `--prior_model` | Path to model to continue training (optional) | _**none**_ |
 
 _**rle.py**_:
 
