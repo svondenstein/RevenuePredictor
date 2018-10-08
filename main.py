@@ -28,8 +28,8 @@ parser.add_argument("--growth_k", default=16, help="Growth rate for Tiramisu", t
 parser.add_argument("--num_classes",   default=2, help="Number of classes", type=int)
 parser.add_argument("--learning_rate", default=1e-4,
                     help="Learning rate for optimizer", type=float)
-parser.add_argument("--infer_data", default="test")
-parser.add_argument("--output_folder", default="predictions")
+parser.add_argument("--infer_data", default="./test/")
+parser.add_argument("--output_folder", default="./predictions/")
 parser.add_argument("--prior_model", default="")
 
 
