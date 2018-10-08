@@ -18,7 +18,7 @@ parser.add_argument("--ckpt", default="checkpoints/model.ckpt",
                     help="Directory for storing model checkpoints")
 parser.add_argument("--layers_per_block", default="4,5,7,10,12,15",
                     help="Number of layers in dense blocks")
-parser.add_argument("--batch_size", default=4,
+parser.add_argument("--batch_size", default=16,
                     help="Batch size for use in training", type=int)
 parser.add_argument("--epochs", default=12,
                     help="Number of epochs for training", type=int)
