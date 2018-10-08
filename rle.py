@@ -11,10 +11,10 @@ from keras.preprocessing import image
 from skimage.transform import resize
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--source_folder", default="data/output")
+parser.add_argument("--source_folder", default="predictions")
 parser.add_argument("--image_height", default=101)
 parser.add_argument("--image_width", default=101)
-parser.add_argument("--csv", default="./output.csv")
+parser.add_argument("--csv", default="./submissions/submission.csv")
 
 def RLenc(img, order='F', format=True):
     bytes = img.reshape(img.shape[0] * img.shape[1], order=order)
