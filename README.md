@@ -51,7 +51,7 @@ To use different training parameters, please consult the [argument definitions](
 Using the default arguments:
 1. Ensure that directories or symlinks with the following names are in the working directory:
 - _checkpoints/_: a directory in which to load checkpoint data for weights and parameters
-- _test/_: a directory containing training images and masks. Should contain two subdirectories: _images/_ and _masks/_, containing training images and training masks, respectively.
+- _test/_: a directory containing training images to make inferences against.
 - _predictions/_: an empty directory to contain predicted masks
 2. Run the program using the default arguments: `python main.py --mode=infer`
 
