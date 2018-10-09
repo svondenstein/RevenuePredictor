@@ -33,7 +33,7 @@ def main():
             trainer.train()
 
         if config.predict:
-            predicter = Predicter(sess, model data, config, logger)
+            predicter = Predicter(sess, model, data, config, logger)
             model.load(sess)
             predicter.predict()
 
