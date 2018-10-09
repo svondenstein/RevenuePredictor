@@ -1,11 +1,11 @@
-Salt Deposit Identification in Python
+Salt Deposit Identification in Python using Tensorflow
 ==================
 
 © 2018 Stephen Vondenstein & Matthew Buckley
 
 ## About This Program
 
-This program identifies Salt Deposits by analyzing subsurface images. The network design is based on the FC-DensNet106 network, outlined in the [One Hundred Layers Tiramisu](https://arxiv.org/pdf/1611.09326.pdf) paper. Additional optimizations are made to process depth data and improve masks, which are outlined below.
+This program identifies salt deposits by analyzing subsurface images. The network design is based on the FC-DenseNet103 network, outlined in the [One Hundred Layers Tiramisu](https://arxiv.org/pdf/1611.09326.pdf) paper. Additional optimizations are made to process depth data and improve masks, which are outlined below.
 
 ## Table of Contents
 
@@ -13,90 +13,119 @@ This program identifies Salt Deposits by analyzing subsurface images. The networ
 
 [Model](#model)
 
-[Running Locally](#running-locally)
+[Usage](#usage)
+* [Setup](#setup)
 * [Training](#training)
 * [Inference](#inference)
-* [Submitting to Kaggle](#kaggle-only)
+* [Submitting to Kaggle](#computing-rle--assembling-submission-for-kaggle)
 
-[Argument List](#argument-definitions)
+[Argument List](#arguments)
 
-[Licensing](#licensing)
+[File Structure](#file-structure)
+
+[Licensing & Resources](#licensing--resources)
 
 ## Data
 
 This project was trained and tested using the dataset from the [TGS Salt Identification Challenge](https://www.kaggle.com/c/tgs-salt-identification-challenge) Kaggle competition. (If you'd like to use this dataset for commercial purposes, you may have to contact the sponsor of the competition).
 
-The source images and masks in this dataset are greyscale images of size 101 by 101, and the depth information for each image is included in a _.csv_ file. Preprocessing was done in _utility.py_ to resize the images to achieve a useable tensor shape in the model. Postprocessing was applied in _rle.py_ to ensure a smooth mask, and to compute the RLE (run length encoded) masks, which is the encoding required by the competition sponsor.
+The source images and masks in this dataset are greyscale images of size 101 by 101, and the depth information for each image is included in a **`.csv`** file. Preprocessing is done to resize the images to achieve a usable tensor shape in the model. Postprocessing is applied to ensure a smooth mask, and to compute the RLE (run length encoded) masks, which is the encoding required by the competition sponsor.
 
 ## Model
 
 - In Progress.
 
-## Running Locally
+## Usage
 
-Clone locally via GitHub Desktop or CLI: `git clone https://github.com/svondenstein/salty.git` and follow the directions below to train and predict.
+### Setup
+
+1. Clone locally via GitHub Desktop or CLI: `git clone https://github.com/svondenstein/ionic.git` and follow the directions below to train and infer.
+2. Navigate to the **`data/`** directory and run the download script to download the dataset. `./download.sh` -- If you plan to use your own dataset instead, ensure that the file structure of the **`data/`** directory matches the one in the [file structure](#file-structure) section.
+
+NOTE: It is possible that this dataset will become unavailable for download at some time after the competition closes. If this happens, the download script will no longer function and you will have to supply your own data to train and infer using this model.
 
 ### Training
 
-Using the default arguments:
-1. Ensure that directories or symlinks with the following names are in the working directory:
-- _checkpoints/_: a directory in which to save checkpoint data for weights and parameters
-- _train/_: a directory containing training images and masks. Should contain two subdirectories: _images/_ and _masks/_, containing training images and training masks, respectively.
-2. Run the program using the default arguments: `python main.py --mode=train`
+* In Progress
 
-To use different training parameters, please consult the [argument definitions](#argument-definitions) section of the README.
+NOTE: The training portion of this program is set to use a default batch size of 16 images. The network was trained using a computer with an Nvidia Tesla V100 GPU, which has 16GB of VRAM. If you are training this network using a GPU with less VRAM, you may need to reduce the batch size to avoid OOM errors. For more information about using different training parameters, including reducing the batch size, please consult the [arguments](#arguments) section of the README.
 
 ### Inference
 
-Using the default arguments:
-1. Ensure that directories or symlinks with the following names are in the working directory:
-- _checkpoints/_: a directory in which to load checkpoint data for weights and parameters
-- _test/_: a directory containing training images to make inferences against.
-- _predictions/_: an empty directory to contain predicted masks
-2. Run the program using the default arguments: `python main.py --mode=infer`
+* In Progress
 
-To use different inference parameters, please consult the [argument definitions](#argument-definitions) section of the README.
+To use different inference parameters, please consult the [arguments](#arguments) section of the README.
 
-### Kaggle Only - Computing RLE and Assembling Submission
+### Computing RLE & Assembling Submission for Kaggle
 
-Using the default arguments:
-1. Ensure that directories or symlinks with the following names are in the working directory:
-- _submissions/_: a directories in which to save the `.csv` files to be submitted
-- _predictions/_: a directories containing the predicted masks
-2. Run the program using the default arguments: `python rle.py`
+* In Progress
 
-To use different submission parameters, please consult the [argument definitions](#argument-definitions) section of the README.
+To use different submission parameters, please consult the [arguments](#arguments) section of the README.
 
-## Argument Definitions
+## Arguments
 
-_**main.py**_:
+### Definitions
+
+The following is a list of arguments with definitions and default values for use when running the program from **`main.py`**:
 
 | Argument | Definition | Default Value |
 | --- | --- | --- |
-| `--mode` | Execution mode - may be "train" or "infer" | infer |
-| `--train_data` | Path to training data - must contain subdirectories _images/_ and _masks/_ | _./train/_ |
-| `--val_data` | Path to validation data - must contain subdirectories _images/_ and _masks/_ | _./train/_ |
-| `--ckpt` | Path to directory to store checkpoints & model parameters | _./checkpoints/model.ckpt_ |
-| `--layers_per_block` | Number of layers per dense block in the model | 4,5,6,10,12,15 |
-| `--batch_size` | Batch size for use in training | 4 |
-| `--epochs` | Number of epochs to train | 12 |
-| `--num_threads` | Number of threads to use for the data input pipeline | 2 |
-| `--growth_k` | Growth rate for Tiramisu | 16 |
-| `--num_classes` | Number of classes to predict | 2 |
-| `--learning_rate` | Learning rate for optimizer | 1e-4 |
-| `--infer_data` | Path to testing data to make predictions for | _./test/_ |
-| `--output_folder` | Path to save predicted masks | _./predictions/_ |
-| `--prior_model` | Path to model to continue training (optional) | _**none**_ |
+ * In Progress
 
-_**rle.py**_:
+### Compatibility
 
-| Argument | Definition | Default Value |
-| --- | --- | --- |
-| `--source_folder` | Directory containing the predicted masks for which to convert to RLE | ./predictions/ |
-| `--image_height` | Target height of mask for RLE computation | 101 |
-| `--image_width` | Target width of mask for RLE computation | 101 |
-| `--csv` | Path to the output file containing the IDs/RLE values for submission to Kaggle | ./submissions/submission.csv |
+* In Progress
 
-## Licensing
+## File Structure
 
-The model design and preprocessing steps in _model.py_ and _utility.py_ are based on the the [Fully Convolutional DenseNet Tensorflow](https://github.com/HasnainRaz/FC-DenseNet-TensorFlow) implementation by GitHub user [HasnainRaz](https://github.com/HasnainRaz). This implementation was very helpful when designing our network structure.
+In order to give an easier understanding of the project's design and execution, the file structure is explained below. Files and directories denoted with  `*` are not included, but required for the program to run properly. Those denoted with `**` are generated by the program when executed.
+
+```
+.
+├── data
+│   ├── download.sh                  -  Script used to download the dataset.
+│   ├── * depths.csv                 -  File containing depth data for each image.
+│   ├── * train.csv                  - 
+│   ├── * test
+│   │     └── * <images>.png         -  The set of images for which to make mask predictions.
+│   └── * train
+│         ├── * images
+│         │     └── * <images>.png   -  The set of images to train the network.
+│         └── * masks
+│               └── * <images>.png   -  The set of masks that corresponds to the set of training images.
+│
+├── docs
+│   ├── LICENSE                      -  License pertaining to this repository.
+│   └── README.md                    -  This document.
+│
+├── helpers
+│   ├── predicter.py                 -  Helper file to run inference with the model.
+│   └── trainer.py                   -  Helper file to train the model. 
+│
+├── models
+│   └── tiramisu.py                  -  The network architecture.
+│   
+├── predictions
+│    └── ** <predictions>.png        -  Predicted masks for the test set -- generated by running test data through the network.
+│
+├── submissions
+│   ├── sample_submission.csv        -  Template for Kaggle submissions provided by Kaggle.
+│   └── ** submission-XX.csv         -  Submission files ready for upload to Kaggle -- generated after computing RLE for predicted masks.
+│  
+├── utils  
+│   ├── helpers.py                   -  Script used to download the dataset.
+│   ├── logger.py                    -  The Tensorboard configuration
+│   ├── parser.py                    -  The parser for parsing arguments to model configuration.
+│   ├── postprocess.py               -  Operations to clean up and resize the predicted masks.
+│   ├── preprocess.py                -  Operations to prepare input data for the network.
+│   ├── rle.py                       -  Function to compute the RLE of the predicted masks.
+│   └── utility.py                   -  Other utilities set up the environment for the program.
+│ 
+└── main.py                          -  The main entry point for the program.
+```
+
+## Licensing & Resources
+
+The model design is based on the [One Hundred Layers Tiramisu](https://arxiv.org/pdf/1611.09326.pdf) paper. The [Fully Convolutional DenseNet Tensorflow](https://github.com/HasnainRaz/FC-DenseNet-TensorFlow) implementation by GitHub user [HasnainRaz](https://github.com/HasnainRaz) was used as a reference for the Tensorflow implementation of the model. This implementation was very helpful in designing the network used in this project, and is a great starting point for using Tiramisu in Tensorflow.
+
+[MrGemy95](https://github.com/MrGemy95)'s [Tensorflow Project Template](https://github.com/MrGemy95/Tensorflow-Project-Template) is another invaluable resource for starting new Tensorflow projects. Although much of the template code heavily modified before being used in our project, being able to review the project structure provided a lot of insight. 
