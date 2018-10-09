@@ -40,7 +40,7 @@ The source images and masks in this dataset are greyscale images of size 101 by 
 ### Setup
 
 1. Clone locally via GitHub Desktop or CLI: `git clone https://github.com/svondenstein/ionic.git` and follow the directions below to train and infer.
-2. Navigate to the **`data/`** directory and run the download script to download the dataset. `./download.sh` -- If you plan to use your own dataset instead, ensure that the file structure of the **`data/`** directory matches the one in the [file structure](#file-structure) section.
+2. Navigate to the **`data/`** directory and run the download script to download the dataset: `./download.sh` -- If you plan to use your own dataset instead, ensure that the file structure of the **`data/`** directory matches the one in the [file structure](#file-structure) section.
 
 NOTE: It is possible that this dataset will become unavailable for download at some time after the competition closes. If this happens, the download script will no longer function and you will have to supply your own data to train and infer using this model.
 
@@ -128,4 +128,4 @@ In order to give an easier understanding of the project's design and execution, 
 
 The model design is based on the [One Hundred Layers Tiramisu](https://arxiv.org/pdf/1611.09326.pdf) paper. The [Fully Convolutional DenseNet Tensorflow](https://github.com/HasnainRaz/FC-DenseNet-TensorFlow) implementation by GitHub user [HasnainRaz](https://github.com/HasnainRaz) was used as a reference for the Tensorflow implementation of the model. This implementation was very helpful in designing the network used in this project, and is a great starting point for using Tiramisu in Tensorflow.
 
-[MrGemy95](https://github.com/MrGemy95)'s [Tensorflow Project Template](https://github.com/MrGemy95/Tensorflow-Project-Template) is another invaluable resource for starting new Tensorflow projects. Although much of the template code heavily modified before being used in our project, being able to review the project structure provided a lot of insight. 
+[MrGemy95](https://github.com/MrGemy95)'s [Tensorflow Project Template](https://github.com/MrGemy95/Tensorflow-Project-Template) is another invaluable resource for starting new Tensorflow projects. Although much of the template code was heavily modified before being used in our project, being able to review the project structure provided a lot of insight. 
