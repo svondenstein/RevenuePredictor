@@ -132,7 +132,7 @@ class Tiramisu:
 
     # Save checkpoint
     def save(self, sess):
-        print('Saving model to {}...\n').format(self.config.model_path)
+        print('Saving model to {}...\n'.format(self.config.model_path))
         self.saver.save(sess, self.config.model_path, self.global_step_tensor)
         print("Model saved.")
 
@@ -140,7 +140,7 @@ class Tiramisu:
     def load(self, sess):
         latest_checkpoint = tf.train.latest_checkpoint(self.config.model_path)
         if latest_checkpoint:
-            print('Loading model checkpoint {} ...\n').format(latest_checkpoint)
+            print('Loading model checkpoint {} ...\n'.format(latest_checkpoint))
             self.saver.restore(sess, latest_checkpoint)
             print("Model loaded.")
 
