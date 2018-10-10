@@ -67,10 +67,10 @@ class Tiramisu:
             # First convolution
             self.stack = tf.layers.conv2d(self.image,
                                           filters=filters,
-                                          kernel_size=[3, 3],
+                                          kernel_size=3,
                                           padding='SAME',
-                                          activation=None,
-                                          kernel_initializer=tf.contrib.layers.xavier_initializer(),
+                                          activation='relu',
+                                          kernel_initializer=tf.contrib.layers.variance_scaling_initializer(),
                                           name='first_conv3x3')
 
             # Downsampling path
@@ -79,8 +79,8 @@ class Tiramisu:
             for i in range(pool):
                 # Dense block
                 for j in range(layers_per_block[i]):
-                    l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'down_dense_block_' + str(i + j))
-                    self.stack = tf.concat([self.stack, l], axis=3, name='down_concat_' + str(i + j))
+                    l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'down_dense_block_' + str(i * 10 + j))
+                    self.stack = tf.concat([self.stack, l], axis=3, name='down_concat_' + str(i * 10 + j))
                     filters += self.config.growth_k
                 skip_connection_list.append(self.stack)
                 self.stack = transition_down(self.stack, filters, self.config.dropout_percentage, self.training, 'trans_down_' + str(i))
@@ -104,9 +104,9 @@ class Tiramisu:
                 # Dense block
                 block_to_upsample = []
                 for j in range(layers_per_block[pool + i + 1]):
-                    l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'up_dense_block_' + str(i + j))
+                    l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'up_dense_block_' + str(i * 10 + j))
                     block_to_upsample.append(l)
-                    self.stack = tf.concat([self.stack, l], axis=3, name='up_concat_' + str(i + j))
+                    self.stack = tf.concat([self.stack, l], axis=3, name='up_concat_' + str(i * 10 + j))
 
             # Softmax
             with tf.variable_scope('out'):
