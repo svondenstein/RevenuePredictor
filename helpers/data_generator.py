@@ -11,10 +11,14 @@ class DataGenerator:
     def __init__(self, config):
         self.config = config
 
-        self.image_path, self.mask_path = tf.constant(self.config.data_path)
+        self.image_path = self.config.data_path + 'images/'
+        self.mask_path = self.config.data_path + 'masks'
 
-        self.images = tf.constant(self.image_path)
-        self.masks = tf.constant(self.mask_path)
+        self.image_paths, self.mask_paths = tf.constant(self.get_data_paths_list(self.image_path,
+                                                                                 self.mask_path))
+
+        self.images = tf.constant(self.image_paths)
+        self.masks = tf.constant(self.mask_paths)
 
         self.dataset = tf.data.Dataset.from_tensor_slices((self.images, self.masks))
         self.dataset = self.dataset.map(DataGenerator.parse_data, num_parallel_calls=self.config.batch_size)
@@ -28,7 +32,7 @@ class DataGenerator:
 
     @staticmethod
     def parse_data(image_paths, label_paths):
-        image_content = tf.read_file(img_paths)
+        image_content = tf.read_file(image_paths)
         images = tf.image.decode_png(image_content, channels=1)
 
         mask_content = tf.read_file(label_paths)
@@ -50,7 +54,7 @@ class DataGenerator:
         return self.iterator.get_next()
 
     @staticmethod
-    def get_data_paths_list(self, image_dir, label_dir):
+    def get_data_paths_list(image_dir, label_dir):
         image_paths = [os.path.join(image_dir, x) for x in os.listdir(
             image_dir) if x.endswith(".png")]
         label_paths = [os.path.join(label_dir, os.path.basename(x))
