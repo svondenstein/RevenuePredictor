@@ -41,7 +41,7 @@ def transition_up(skip_connection, block, filters, training, name):
                                        activation='relu',
                                        kernel_initializer=tf.contrib.layers.variance_scaling_initializer(),
                                        name=name+'_trans_conv_3x3')
-        l = tf.concat([l, skip_connection], axis=1, name=name + 'concat_up_2')
+        l = tf.concat([l, skip_connection], axis=3, name=name + 'concat_up_2')
 
     return l
 
