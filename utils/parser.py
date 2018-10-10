@@ -65,8 +65,7 @@ def get_args():
 
     parser.add_argument('-s', '--submission_path',
                         default='./submissions/',
-                        help='Directory to save submissions',
-                        type=float)
+                        help='Directory to save submissions',)
 
     parser.add_argument('-t', '--train',
                         action='store_true',
