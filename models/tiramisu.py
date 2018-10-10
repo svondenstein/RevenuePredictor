@@ -16,12 +16,16 @@ class Tiramisu:
         self.increment_cur_epoch_tensor = None
         self.global_step_tensor = None
         self.increment_global_step_tensor = None
+        self.global_epoch_tensor = None
+        self.increment_global_epoch_tensor = None
 
         # Initialize step counter
         self.init_global_step()
 
         # Initialize epoch counter
         self.init_cur_epoch()
+
+        # Initialize global epoch counter
 
         # Initialize saver
         self.saver = None
@@ -149,6 +153,11 @@ class Tiramisu:
         with tf.variable_scope('global_step'):
             self.global_step_tensor = tf.Variable(0, trainable=False, name='global_step')
             self.increment_global_step_tensor = self.global_step_tensor.assign(self.global_step_tensor + 1)
+
+    # Initialize global epoch counter
+    def init_global_epoch(self):
+        self.global_epoch_tensor = tf.Variable(0, trainable=False, name='global_epoch')
+        self.increment_global_epoch_tensor = self.global_epoch_tensor.assign(self.global_epoch_tensor + 1)
 
     # Initialize tensorflow saver used for saving checkpoints
     def init_saver(self):
