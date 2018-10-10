@@ -5,7 +5,7 @@
 import tensorflow as tf
 
 from models.tiramisu import Tiramisu
-from utils.preprocess import DataGenerator
+from helpers.data_generator import DataGenerator
 from utils.parser import get_config
 from utils.utility import create_dirs
 from utils.logger import Logger
