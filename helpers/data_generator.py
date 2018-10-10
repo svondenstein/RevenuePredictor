@@ -17,8 +17,9 @@ class DataGenerator:
 
         self.image_paths, self.mask_paths = self.get_data_paths_list(self.image_path, self.mask_path)
 
-        self.num_iterations_test = (len(self.image_paths) * self.config.validation_split) // self.config.batch_size
-        self.num_iterations_train = (len(self.image_paths) * (1 - self.config.validation_split)) // self.config.batch_size
+        self.num_iterations_test = int((len(self.image_paths) * self.config.validation_split) // self.config.batch_size)
+        self.num_iterations_train = int((len(self.image_paths) * (1 - self.config.validation_split))
+                                        // self.config.batch_size)
 
         self.images = tf.constant(self.image_paths)
         self.masks = tf.constant(self.mask_paths)
