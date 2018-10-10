@@ -35,7 +35,7 @@ class DataGenerator:
         self.test_data = self.test_data.batch(self.config.batch_size)
         self.train_data = self.train_data.batch(self.config.batch_size)
 
-        self.iterator = tf.data.Iterator.from_structure(self.dataset.output_types, self.dataset.output_shapes)
+        self.iterator = tf.data.Iterator.from_structure(self.test_data.output_types, self.test_data.output_shapes)
         self.training_init_op = self.iterator.make_initializer(self.train_data)
         self.testing_init_op = self.iterator.make_initializer(self.test_data)
 
