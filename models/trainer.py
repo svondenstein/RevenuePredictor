@@ -57,7 +57,7 @@ class Trainer:
 
         # Summarize
         summaries_dict = {'train/loss_per_epoch': loss_per_epoch.val,
-                          'train/acc_per_epoch': acc_per_epoch.vall}
+                          'train/acc_per_epoch': acc_per_epoch.val}
         self.logger.summarize(self.model.global_step_tensor.eval(self.sess), summaries_dict)
 
         self.model.save(self.sess)
