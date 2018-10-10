@@ -79,8 +79,3 @@ def get_args():
 
     FLAGS = parser.parse_args()
     return FLAGS
-
-
-def get_config():
-    config = get_args()
-    return config

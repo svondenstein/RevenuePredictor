@@ -6,7 +6,7 @@ import tensorflow as tf
 
 from models.tiramisu import Tiramisu
 from helpers.data_generator import DataGenerator
-from utils.parser import get_config
+from utils.parser import get_args
 from utils.utility import create_dirs
 from utils.logger import Logger
 from utils.rle import prepare_submission
@@ -15,7 +15,7 @@ from models.trainer import Trainer
 
 def main():
     # Get configuration
-    config = get_config()
+    config = get_args()
 
     # Set up test/train environment
     if config.predict or config.train:
