@@ -4,6 +4,8 @@
 #
 import tensorflow as tf
 
+from models.layers import bn_relu_conv, transition_down, transition_up, softmax
+
 class Tiramisu:
     def __init__(self, data_loader, config):
         # Configuration parameters
@@ -21,29 +23,116 @@ class Tiramisu:
         # Initialize epoch counter
         self.init_cur_epoch()
 
+        # Initialize saver
+        self.saver = None
+
         # Initialize data loader
         self.data_loader = data_loader
 
         # Define local variables
-
+        self.image = None
+        self.mask = None
+        self.training = None
+        self.out = None
+        self.stack = None
+        self.loss = None
+        self.acc = None
+        self.optimizer = None
+        self.train_step = None
 
         # Build model and initialize saver
         self.build_model()
         self.init_saver()
 
     def build_model(self):
-        # Build the tensorflow graph and define the loss
-        pass
+        # Network parameters
+        pool = 5
+        layers_per_block = [4, 5, 7, 10, 12, 15, 12, 10, 7, 5, 4]
+        filters = 48
+
+        # Inputs to the network
+        with tf.variable_scope('inputs'):
+            self.image, self.mask = self.data_loader.get_input()
+            self.training = tf.placeholder(tf.bool, name='Training_flag')
+        tf.add_to_collection('inputs', self.image)
+        tf.add_to_collection('inputs', self.mask)
+        tf.add_to_collection('inputs', self.training)
+
+        # Network architecture
+        with tf.variable_scope('network'):
+            # First convolution
+            self.stack = tf.layers.conv2d(self.image,
+                                          filters=filters,
+                                          kernel_size=[3, 3],
+                                          padding='SAME',
+                                          activation=None,
+                                          kernel_initializer=tf.contrib.layers.xavier_initializer(),
+                                          name='first_conv3x3')
+
+            # Downsampling path
+            skip_connection_list = []
+
+            for i in range(pool):
+                # Dense block
+                for j in range(layers_per_block[i]):
+                    l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'down_dense_block_' + str(i + j))
+                    self.stack = tf.concat([self.stack, l], name='down_concat_' + str(i + j))
+                    filters += self.config.growth_k
+                skip_connection_list.append(self.stack)
+                self.stack = transition_down(self.stack, filters, self.config.dropout_percentage, self.training, 'trans_down_' + str(i))
+
+            skip_connection_list = skip_connection_list[::-1]
+
+            # Bottleneck
+            block_to_upsample = []
+
+            # Dense Block
+            for j in range(layers_per_block[pool]):
+                l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'bottleneck_dense_' + str(j))
+                block_to_upsample.append(l)
+                self.stack = tf.concat([self.stack, l], name='bottleneck_concat_' + str(j))
+
+            # Upsampling path
+            for i in range(pool):
+                filters_keep = self.config.growth_k * layers_per_block[pool + i]
+                self.stack = transition_up(skip_connection_list[i], block_to_upsample, filters_keep, self.training, 'trans_up_' + str(i))
+
+                # Dense block
+                block_to_upsample = []
+                for j in range(layers_per_block[pool + i + 1]):
+                    l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'up_dense_block_' + str(i + j))
+                    block_to_upsample.append(l)
+                    self.stack = tf.concat([self.stack, l], name='up_concat_' + str(i + j))
+
+            # Softmax
+            with tf.variable_scope('out'):
+                self.out = softmax(self.stack, self.config.classes, self.training, 'softmax')
+                tf.add_to_collection('out', self.out)
+
+        # Operators for the training process
+        #with tf.variable_scope('loss-acc'):
+            # self.loss =
+            # self.acc =
+
+        with tf.variable_scope('train_step'):
+            self.optimizer = tf.train.AdamOptimizer(self.config.learning_rate)
+            update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+            with tf.control_dependencies(update_ops):
+                self.train_step = self.optimizer.minimize(self.loss, global_step=self.global_step_tensor)
+
+        tf.add_to_collection('train', self.train_step)
+        tf.add_to_collection('train', self.loss)
+        tf.add_to_collection('train', self.acc)
 
     # Save checkpoint
     def save(self, sess):
-        print('Saving model to {}...\n').format(self.config.checkpoint_dir)
-        self.saver.save(sess, self.config.checkpoint_dir, self.global_step_tensor)
+        print('Saving model to {}...\n').format(self.config.model_path)
+        self.saver.save(sess, self.config.model_path, self.global_step_tensor)
         print("Model saved.")
 
     # Load checkpoint
     def load(self, sess):
-        latest_checkpoint = tf.train.latest_checkpoint(self.config.checkpoint_dir)
+        latest_checkpoint = tf.train.latest_checkpoint(self.config.model_path)
         if latest_checkpoint:
             print('Loading model checkpoint {} ...\n').format(latest_checkpoint)
             self.saver.restore(sess, latest_checkpoint)
@@ -53,13 +142,13 @@ class Tiramisu:
     def init_cur_epoch(self):
         with tf.variable_scope('cur_epoch'):
             self.cur_epoch_tensor = tf.Variable(0, trainable=False, name='cur_epoch')
-            self.increment_cur_epoch_tensor = tf.assign(self.cur_epoch_tensor, self.cur_epoch_tensor + 1)
+            self.increment_cur_epoch_tensor = self.cur_epoch_tensor.assign(self.cur_epoch_tensor + 1)
 
     # Initialize step counter
     def init_global_step(self):
         with tf.variable_scope('global_step'):
             self.global_step_tensor = tf.Variable(0, trainable=False, name='global_step')
-            self.increment_global_step_tensor = tf.assign(self.global_step_tensor, self.global_step_tensor + 1)
+            self.increment_global_step_tensor = self.global_step_tensor.assign(self.global_step_tensor + 1)
 
     # Initialize tensorflow saver used for saving checkpoints
     def init_saver(self):
