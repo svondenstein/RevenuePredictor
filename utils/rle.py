@@ -68,5 +68,5 @@ def prepare_submission(source_dir, output_path, image_height, image_width):
     sub = pd.DataFrame.from_dict(pred_dict, orient='index')
     sub.index.names = ['id']
     sub.columns = ['rle_mask']
-    sub.to_csv(output_path)
-    print("Submission saved to " + output_path)
+    sub.to_csv(output_path + 'submission.csv')
+    print('Submission saved to ' + output_path + 'submission.csv')
