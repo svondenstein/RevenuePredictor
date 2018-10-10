@@ -52,10 +52,7 @@ class DataGenerator:
 
     @staticmethod
     def normalize_data(image, mask):
-        #image = tf.cast(image, tf.float32)
         image = image / 255.0
-
-        #mask = tf.cast(mask, tf.float32)
         mask = mask / 255.0
 
         return image, mask
