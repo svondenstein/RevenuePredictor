@@ -28,7 +28,8 @@ def get_args():
 
     parser.add_argument('-dp', '--dropout_percentage',
                         default=0.2,
-                        help='Dropout percentage for dropout layer')
+                        help='Dropout percentage for dropout layer',
+                        type=float)
 
     parser.add_argument('-e', '--epochs',
                         default=32,
@@ -55,7 +56,8 @@ def get_args():
 
     parser.add_argument('-mk', '--max_to_keep',
                         default=0,
-                        help='Maximum number of models to save')
+                        help='Maximum number of models to save',
+                        type=int)
 
     parser.add_argument('-p', '--prediction_path',
                         default='./predictions/',
