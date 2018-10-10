@@ -14,6 +14,7 @@ def get_args():
                         help='Augment data to increase the size and variation of the training set')
 
     parser.add_argument('-b', '--batch_size',
+                        default=16,
                         help='Batch size for use in training',
                         type=int)
 
