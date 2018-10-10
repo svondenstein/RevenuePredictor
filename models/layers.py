@@ -33,7 +33,7 @@ def transition_down(inputs, filters, dropout, training, name):
 # Perform upsampling on block by factor 2 and concatenates it with skip connection
 def transition_up(skip_connection, block, filters, training, name):
     with tf.variable_scope(name):
-        l = tf.concat(block, axis=1, name=name + 'concat_up_1')
+        l = tf.concat(block, axis=3, name=name + 'concat_up_1')
         l = tf.layers.conv2d_transpose(l,
                                        filters=filters,
                                        kernel_size=3,
