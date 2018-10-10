@@ -1,6 +1,6 @@
 #
 # Stephen Vondenstein, Matthew Buckley
-# 10/08/2018
+# 10/09/2018
 #
 import tensorflow as tf
 
@@ -54,7 +54,7 @@ def transition_up(skip_connection, block, filters, training, name):
 def softmax(stack, classes, training, name):
     with tf.variable_scope(name):
         l = tf.layers.conv2d(stack,
-                             filters=filters,
+                             filters=classes,
                              kernel_size=1,
                              padding='SAME',
                              activation='relu',
