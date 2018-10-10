@@ -26,8 +26,8 @@ class DataGenerator:
         self.dataset = tf.data.Dataset.from_tensor_slices((self.images, self.masks))
         self.dataset = self.dataset.shuffle(len(self.image_paths))
 
-        self.test_data = self.dataset.take(len(self.image_paths) * self.config.validation_split)
-        self.train_data = self.dataset.skip(len(self.image_paths) * self.config.validation_split)
+        self.test_data = self.dataset.take(tf.cast(len(self.image_paths) * self.config.validation_split, tf.int64))
+        self.train_data = self.dataset.skip(tf.cast(len(self.image_paths) * self.config.validation_split, tf.int64))
 
         self.test_data = process(self.test_data, False, self.config)
         self.train_data = process(self.train_data, True, self.config)
