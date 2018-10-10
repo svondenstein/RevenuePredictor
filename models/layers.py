@@ -57,5 +57,5 @@ def softmax(stack, classes, training, name):
                              activation='relu',
                              kernel_initializer=tf.contrib.layers.variance_scaling_initializer(),
                              name='last_conv1x1')
-    # Softmax?
+        l = tf.nn.softmax(l, axis=-1)
     return l
