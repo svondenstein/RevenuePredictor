@@ -14,8 +14,7 @@ class DataGenerator:
         self.image_path = self.config.data_path + 'train/images/'
         self.mask_path = self.config.data_path + 'train/masks'
 
-        self.image_paths, self.mask_paths = tf.constant(self.get_data_paths_list(self.image_path,
-                                                                                 self.mask_path))
+        self.image_paths, self.mask_paths = self.get_data_paths_list(self.image_path, self.mask_path)
 
         self.images = tf.constant(self.image_paths)
         self.masks = tf.constant(self.mask_paths)
