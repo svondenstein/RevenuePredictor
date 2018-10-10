@@ -74,11 +74,13 @@ The following is a list of arguments with definitions and default values for use
 | `-b`, `--batch_size` | Batch size for training | **16** |
 | `-c`, `--classes` | Number of distinct classes for inference | **2** |
 | `-d`, `--data_path` | Path to the directory containing test and training data | **`data/`** |
+| `-dp`, `--dropout_percentage` | Dropout percentage for dropout layer| **0.2** |
 | `-e`, `--epochs` | Number of epochs to train | **32** |
 | `-i`, `--infer` | When present, the program will run inference | _false_ |
 | `-k`, `--growth_k` | Growth rate for Tiramisu | **16** |
 | `-lr`, `--learning_rate` | Learning rate for the optimizer | **1e-3** |
 | `-m`, `--model_path` | Path to the directory in which to save trained models | **`models/tiramisu/`** |
+| `-mk`, `--max_to_keep` | Maximum number of epoch checkpoints to save -- to disable, use 0 | **0** |
 | `-p`, `--prediction_path` | Path to the directory in which to save predictions | **`predictions/`** |
 | `-r`, `--rle` | When present, the program will compute the rle and prepare a submission | _false_ |
 | `-s`, `--submission_path` | Path to the directory in which to save submissions | **`submissions/`** |
@@ -98,9 +100,10 @@ In order to give an easier understanding of the project's design and execution, 
 ├── data
 │   ├── download.sh                  -  Script used to download the dataset.
 │   ├── * depths.csv                 -  File containing depth data for each image.
-│   ├── * train.csv                  - 
+│   ├── * train.csv                  -  File containing ids and RLE masks for training data.
 │   ├── * test
-│   │     └── * <images>.png         -  The set of images for which to make mask predictions.
+│   │     └── * images
+│   │           └── * <images>.png   -  The set of images for which to make predictions.
 │   └── * train
 │         ├── * images
 │         │     └── * <images>.png   -  The set of images to train the network.
@@ -112,11 +115,15 @@ In order to give an easier understanding of the project's design and execution, 
 │   └── README.md                    -  This document.
 │
 ├── helpers
-│   ├── predicter.py                 -  Helper file to run inference with the model.
-│   └── trainer.py                   -  Helper file to train the model. 
+│   ├── data_generator.py            -  Iterator for dataset.
+│   ├── postprocess.py               -  Operations to clean up and resize the predicted masks.
+│   └── preprocess.py                -  Operations to prepare input data for the network.
 │
 ├── models
+│   ├── layers.py                    -  Definitions for various layers within the network.
+│   ├── predicter.py                 -  Helper file to run inference with the model.
 │   ├── tiramisu.py                  -  The network architecture.
+│   ├── trainer.py                   -  Helper file to train the model. 
 │   └── ** tiramisu                  -  Directory containing saved models.
 │   
 ├── predictions
@@ -127,11 +134,8 @@ In order to give an easier understanding of the project's design and execution, 
 │   └── ** submission-XX.csv         -  Submission files ready for upload to Kaggle.
 │  
 ├── utils  
-│   ├── helpers.py                   -  Script used to download the dataset.
-│   ├── logger.py                    -  The Tensorboard configuration.
+│   ├── metrics.py                   -  Functions to compute loss and accuracy.
 │   ├── parser.py                    -  The parser for parsing arguments to model configuration.
-│   ├── postprocess.py               -  Operations to clean up and resize the predicted masks.
-│   ├── preprocess.py                -  Operations to prepare input data for the network.
 │   ├── rle.py                       -  Function to compute the RLE of the predicted masks.
 │   └── utility.py                   -  Other utilities set up the environment for the program.
 │ 

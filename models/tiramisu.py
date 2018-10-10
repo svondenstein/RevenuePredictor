@@ -37,6 +37,7 @@ class Tiramisu:
 
         # Define local variables
         self.image = None
+        self.image_name = None
         self.mask = None
         self.training = None
         self.out = None
@@ -58,11 +59,12 @@ class Tiramisu:
 
         # Inputs to the network
         with tf.variable_scope('inputs'):
-            self.image, self.mask = self.data_loader.get_input()
+            self.image, self.mask, self.image_name = self.data_loader.get_input()
             self.training = tf.placeholder(tf.bool, name='Training_flag')
         tf.add_to_collection('inputs', self.image)
         tf.add_to_collection('inputs', self.mask)
         tf.add_to_collection('inputs', self.training)
+        tf.add_to_collection('inputs', self.image_name)
 
         # Network architecture
         with tf.variable_scope('network'):

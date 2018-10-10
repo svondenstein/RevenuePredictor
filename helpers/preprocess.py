@@ -11,23 +11,26 @@ def process(dataset, training, config):
 
     return dataset
 
-def parse_data(image_paths, label_paths):
+def parse_data(image_paths, label_paths, names):
     image_content = tf.read_file(image_paths)
     images = tf.image.decode_png(image_content, channels=1)
 
     mask_content = tf.read_file(label_paths)
     masks = tf.image.decode_png(mask_content, channels=1)
 
-    return images, masks
+    return images, masks, names
 
-def resize_data(image, mask):
+def resize_data(image, mask, name):
     image = tf.image.resize_images(image, [128, 128])
     mask = tf.image.resize_images(mask, [128, 128])
 
-    return image, mask
+    return image, mask, name
 
-def normalize_data(image, mask):
+def normalize_data(image, mask, name):
+    image = tf.cast(image, tf.float32)
     image = image / 255.0
+
+    mask = tf.cast(mask, tf.float32)
     mask = mask / 255.0
 
-    return image, mask
+    return image, mask, name

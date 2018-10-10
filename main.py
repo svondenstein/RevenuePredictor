@@ -9,9 +9,9 @@ from models.tiramisu import Tiramisu
 from helpers.data_generator import DataGenerator
 from utils.parser import get_args
 from utils.utility import create_dirs
-from utils.logger import Logger
 from utils.rle import prepare_submission
 from models.trainer import Trainer
+from models.predicter import Predicter
 
 
 def main():
@@ -29,23 +29,26 @@ def main():
         data = DataGenerator(config)
         print('Building model...')
         model = Tiramisu(data, config)
-        print('Initializing Tensorboard...')
-        logger = Logger(sess, summary_dir=config.summary_path,
-                        scalar_tags=['train/loss_per_epoch', 'train/acc_per_epoch',
-                                     'test/loss_per_epoch', 'test/acc_per_epoch'])
-
-        print('Creating model save directories...')
-        create_dirs([config.model_path, config.summary_path])
-        print('Initializing trainer...')
-        trainer = Trainer(sess, model, data, config, logger)
-        print('Initializing model...')
-        model.load(sess)
-        print('Training model...')
-        trainer.train()
+        if config.train:
+            print('Creating model save directories...')
+            create_dirs([config.model_path])
+            print('Initializing trainer...')
+            trainer = Trainer(sess, model, data, config)
+            print('Initializing model...')
+            model.load(sess)
+            print('Training model...')
+            trainer.train()
+        if config.infer:
+            print('Initializing predicter...')
+            predicter = Predicter(sess, model, data, config)
+            print('Initializing model...')
+            model.load(sess)
+            print('Making predictions...')
+            predicter.predict()
 
     # Prepare submission
     if config.rle:
-        prepare_submission(config.predictions, config.submissions, 101, 101)
+        prepare_submission(config.prediction_path, config.submission_path, 101, 101)
 
     print('Done!')
 
