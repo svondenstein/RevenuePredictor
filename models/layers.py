@@ -34,7 +34,6 @@ def transition_down(inputs, filters, dropout, training, name):
 def transition_up(skip_connection, block, filters, training, name):
     with tf.variable_scope(name):
         l = tf.concat(block, axis=3, name=name + 'concat_up_1')
-        print(l.get_shape())
         l = tf.layers.conv2d_transpose(l,
                                        filters=filters,
                                        kernel_size=3,
@@ -43,7 +42,6 @@ def transition_up(skip_connection, block, filters, training, name):
                                        activation='relu',
                                        kernel_initializer=tf.contrib.layers.variance_scaling_initializer(),
                                        name=name+'_trans_conv_3x3')
-        print(l.get_shape())
         l = tf.concat([l, skip_connection], axis=3, name=name + 'concat_up_2')
 
     return l
