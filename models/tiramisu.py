@@ -80,7 +80,7 @@ class Tiramisu:
                 # Dense block
                 for j in range(layers_per_block[i]):
                     l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'down_dense_block_' + str(i + j))
-                    self.stack = tf.concat([self.stack, l], name='down_concat_' + str(i + j))
+                    self.stack = tf.concat([self.stack, l], axis=1, name='down_concat_' + str(i + j))
                     filters += self.config.growth_k
                 skip_connection_list.append(self.stack)
                 self.stack = transition_down(self.stack, filters, self.config.dropout_percentage, self.training, 'trans_down_' + str(i))
@@ -94,7 +94,7 @@ class Tiramisu:
             for j in range(layers_per_block[pool]):
                 l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'bottleneck_dense_' + str(j))
                 block_to_upsample.append(l)
-                self.stack = tf.concat([self.stack, l], name='bottleneck_concat_' + str(j))
+                self.stack = tf.concat([self.stack, l], axis=1, name='bottleneck_concat_' + str(j))
 
             # Upsampling path
             for i in range(pool):
@@ -106,7 +106,7 @@ class Tiramisu:
                 for j in range(layers_per_block[pool + i + 1]):
                     l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'up_dense_block_' + str(i + j))
                     block_to_upsample.append(l)
-                    self.stack = tf.concat([self.stack, l], name='up_concat_' + str(i + j))
+                    self.stack = tf.concat([self.stack, l], axis=1, name='up_concat_' + str(i + j))
 
             # Softmax
             with tf.variable_scope('out'):
