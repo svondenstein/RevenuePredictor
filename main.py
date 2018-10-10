@@ -32,7 +32,7 @@ def main():
 
     # Prepare submission
     if config.rle:
-        prepare_submission(config.predictions, config.submissions, config.image_height, config.image_width)
+        prepare_submission(config.predictions, config.submissions, 101, 101)
 
     print('Done!')
 
