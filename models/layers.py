@@ -31,7 +31,7 @@ def transition_down(inputs, filters, dropout, training, name):
     return l
 
 # Perform upsampling on block by factor 2 and concatenates it with skip connection
-def transition_up(skip_connection, block, filters, training, name):
+def transition_up(skip_connection, block, filters, name):
     with tf.variable_scope(name):
         l = tf.concat(block, axis=3, name=name + 'concat_up_1')
         l = tf.layers.conv2d_transpose(l,
@@ -48,7 +48,7 @@ def transition_up(skip_connection, block, filters, training, name):
 
 
 # Perform 1x1 convolution followed by softmax nonlinearity
-def softmax(stack, classes, training, name):
+def softmax(stack, classes, name):
     with tf.variable_scope(name):
         l = tf.layers.conv2d(stack,
                              filters=classes,

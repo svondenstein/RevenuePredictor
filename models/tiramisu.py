@@ -101,7 +101,7 @@ class Tiramisu:
             # Upsampling path
             for i in range(pool):
                 filters_keep = self.config.growth_k * layers_per_block[pool + i]
-                self.stack = transition_up(skip_connection_list[i], block_to_upsample, filters_keep, self.training, 'trans_up_' + str(i))
+                self.stack = transition_up(skip_connection_list[i], block_to_upsample, filters_keep, 'trans_up_' + str(i))
 
                 # Dense block
                 block_to_upsample = []
@@ -112,7 +112,7 @@ class Tiramisu:
 
             # Softmax
             with tf.variable_scope('out'):
-                self.out = softmax(self.stack, self.config.classes, self.training, 'softmax')
+                self.out = softmax(self.stack, self.config.classes, 'softmax')
                 tf.add_to_collection('out', self.out)
 
         # Operators for the training process
