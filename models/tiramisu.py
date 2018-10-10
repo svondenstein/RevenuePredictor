@@ -27,6 +27,7 @@ class Tiramisu:
         self.init_cur_epoch()
 
         # Initialize global epoch counter
+        self.init_global_epoch()
 
         # Initialize saver
         self.saver = None
