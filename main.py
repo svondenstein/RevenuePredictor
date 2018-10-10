@@ -18,7 +18,7 @@ def main():
     config = get_args()
 
     # Set up test/train environment
-    if config.predict or config.train:
+    if config.infer or config.train:
         # Set up common environment
         sess = tf.Session()
         data = DataGenerator(config)
