@@ -4,7 +4,6 @@
 #
 import tensorflow as tf
 
-@staticmethod
 # Apply batch normalization, ReLu, Convolution, and Dropout on the inputs
 def bn_relu_conv(inputs, filters, dropout, training, name, filter_size=3):
     with tf.variable_scope(name):
@@ -23,7 +22,6 @@ def bn_relu_conv(inputs, filters, dropout, training, name, filter_size=3):
     return l
 
 
-@staticmethod
 # Apply bn_relu_conv layer and then a max pooling
 def transition_down(inputs, filters, dropout, training, name):
     with tf.variable_scope(name):
@@ -32,7 +30,6 @@ def transition_down(inputs, filters, dropout, training, name):
 
     return l
 
-@staticmethod
 # Perform upsampling on block by factor 2 and concatenates it with skip connection
 def transition_up(skip_connection, block, filters, training, name):
     with tf.variable_scope(name):
@@ -49,7 +46,6 @@ def transition_up(skip_connection, block, filters, training, name):
     return l
 
 
-@staticmethod
 # Perform 1x1 convolution followed by softmax nonlinearity
 def softmax(stack, classes, training, name):
     with tf.variable_scope(name):
