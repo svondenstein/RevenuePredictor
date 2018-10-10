@@ -55,6 +55,10 @@ def get_args():
                         default='./models/tiramisu',
                         help='Directory to save trained models')
 
+    parser.add_argument('-mk', '--max_to_keep',
+                        default=0,
+                        help='Maximum number of models to save')
+
     parser.add_argument('-p', '--prediction_path',
                         default='./predictions/',
                         help='Directory to save predicted masks')
@@ -66,7 +70,11 @@ def get_args():
 
     parser.add_argument('-s', '--submission_path',
                         default='./submissions/',
-                        help='Directory to save submissions',)
+                        help='Directory to save submissions')
+
+    parser.add_argument('-sp', '--summary_path',
+                        default='./models/summaries/',
+                        help='Directory to save Tensorboard summaries')
 
     parser.add_argument('-t', '--train',
                         action='store_true',

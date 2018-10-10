@@ -6,7 +6,7 @@ import os
 
 import tensorflow as tf
 
-
+# Some of this needs to change when validation split is implemented
 class DataGenerator:
     def __init__(self, config):
         self.config = config
@@ -19,9 +19,13 @@ class DataGenerator:
         self.images = tf.constant(self.image_paths)
         self.masks = tf.constant(self.mask_paths)
 
+        self.num_iterations_train = len(self.image_paths) // self.config.batch_size
+        self.num_iterations_test = self.num_iterations_train
+
         self.dataset = tf.data.Dataset.from_tensor_slices((self.images, self.masks))
         self.dataset = self.dataset.map(DataGenerator.parse_data, num_parallel_calls=self.config.batch_size)
         self.dataset = self.dataset.map(DataGenerator.resize_data, num_parallel_calls=self.config.batch_size)
+        self.dataset = self.dataset.map(DataGenerator.normalize_data, num_parallel_calls=self.config.batch_size)
         self.dataset = self.dataset.shuffle(1000, reshuffle_each_iteration=False)
         self.dataset = self.dataset.batch(self.config.batch_size)
         # self.dataset = self.dataset.repeat(1)
@@ -41,8 +45,18 @@ class DataGenerator:
 
     @staticmethod
     def resize_data(image, mask):
-        image = tf.image.resize_images(image, [256, 256])
-        mask = tf.image.resize_images(mask, [256, 256])
+        image = tf.image.resize_images(image, [128, 128])
+        mask = tf.image.resize_images(mask, [128, 128])
+
+        return image, mask
+
+    @staticmethod
+    def normalize_data(image, mask):
+        #image = tf.cast(image, tf.float32)
+        image = image / 255.0
+
+        #mask = tf.cast(mask, tf.float32)
+        mask = mask / 255.0
 
         return image, mask
 

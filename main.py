@@ -2,6 +2,7 @@
 # Stephen Vondenstein, Matthew Buckley
 # 10/08/2018
 #
+import os
 import tensorflow as tf
 
 from models.tiramisu import Tiramisu
@@ -14,6 +15,9 @@ from models.trainer import Trainer
 
 
 def main():
+    # Set Tensorflow verbosity
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
     # Get configuration
     config = get_args()
 
@@ -21,13 +25,22 @@ def main():
     if config.infer or config.train:
         # Set up common environment
         sess = tf.Session()
+        print('Loading data...')
         data = DataGenerator(config)
+        print('Building model...')
         model = Tiramisu(data, config)
-        logger = Logger(sess, config)
+        print('Initializing Tensorboard...')
+        logger = Logger(sess, summary_dir=config.summary_path,
+                        scalar_tags=['train/loss_per_epoch', 'train/acc_per_epoch',
+                                     'test/loss_per_epoch', 'test/acc_per_epoch'])
 
-        create_dirs([config.model_path])
+        print('Creating model save directories...')
+        create_dirs([config.model_path, config.summary_path])
+        print('Initializing trainer...')
         trainer = Trainer(sess, model, data, config, logger)
+        print('Initializing model...')
         model.load(sess)
+        print('Training model...')
         trainer.train()
 
     # Prepare submission

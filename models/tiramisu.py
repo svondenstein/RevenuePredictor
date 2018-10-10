@@ -5,6 +5,7 @@
 import tensorflow as tf
 
 from models.layers import bn_relu_conv, transition_down, transition_up, softmax
+from utils.metrics import iou, cross_entropy
 
 class Tiramisu:
     def __init__(self, data_loader, config):
@@ -104,7 +105,7 @@ class Tiramisu:
                 # Dense block
                 block_to_upsample = []
                 for j in range(layers_per_block[pool + i + 1]):
-                    l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'up_dense_block_' + str(i * 10 + j))
+                    l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'up_dense_block_' + str(i + j * 10))
                     block_to_upsample.append(l)
                     self.stack = tf.concat([self.stack, l], axis=3, name='up_concat_' + str(i * 10 + j))
 
@@ -115,8 +116,8 @@ class Tiramisu:
 
         # Operators for the training process
         with tf.variable_scope('loss-acc'):
-            self.loss = tf.losses.sparse_softmax_cross_entropy(labels=self.mask, logits=self.out)
-            self.acc = tf.metrics.mean_iou(labels=self.mask, predictions=self.out, num_classes=self.config.classes)
+            self.loss = cross_entropy(self.out, self.mask, self.config.classes)
+            self.acc = iou(self.out, self.mask, self.config.classes)
 
         with tf.variable_scope('train_step'):
             self.optimizer = tf.train.AdamOptimizer(self.config.learning_rate)
