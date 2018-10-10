@@ -5,6 +5,7 @@
 import os
 
 import tensorflow as tf
+from helpers.preprocess import process
 
 # Some of this needs to change when validation split is implemented
 class DataGenerator:
@@ -16,49 +17,33 @@ class DataGenerator:
 
         self.image_paths, self.mask_paths = self.get_data_paths_list(self.image_path, self.mask_path)
 
+        self.num_iterations_test = (len(self.image_paths) * self.config.validation_split) // self.config.batch_size
+        self.num_iterations_train = (len(self.image_paths) * (1 - self.config.validation_split)) // self.config.batch_size
+
         self.images = tf.constant(self.image_paths)
         self.masks = tf.constant(self.mask_paths)
 
-        self.num_iterations_train = len(self.image_paths) // self.config.batch_size
-        self.num_iterations_test = self.num_iterations_train
-
         self.dataset = tf.data.Dataset.from_tensor_slices((self.images, self.masks))
-        self.dataset = self.dataset.map(DataGenerator.parse_data, num_parallel_calls=self.config.batch_size)
-        self.dataset = self.dataset.map(DataGenerator.resize_data, num_parallel_calls=self.config.batch_size)
-        self.dataset = self.dataset.map(DataGenerator.normalize_data, num_parallel_calls=self.config.batch_size)
-        self.dataset = self.dataset.shuffle(1000, reshuffle_each_iteration=False)
-        self.dataset = self.dataset.batch(self.config.batch_size)
-        # self.dataset = self.dataset.repeat(1)
+        self.dataset = self.dataset.shuffle(len(self.image_paths))
+
+        self.test_data = self.dataset.take(len(self.image_paths) * self.config.validation_split)
+        self.train_data = self.dataset.skip(len(self.image_paths) * self.config.validation_split)
+
+        self.test_data = process(self.test_data, False, self.config)
+        self.train_data = process(self.train_data, True, self.config)
+
+        self.test_data = self.test_data.batch(self.config.batch_size)
+        self.train_data = self.train_data.batch(self.config.batch_size)
 
         self.iterator = tf.data.Iterator.from_structure(self.dataset.output_types, self.dataset.output_shapes)
-        self.training_init_op = self.iterator.make_initializer(self.dataset)
+        self.training_init_op = self.iterator.make_initializer(self.train_data)
+        self.testing_init_op = self.iterator.make_initializer(self.test_data)
 
-    @staticmethod
-    def parse_data(image_paths, label_paths):
-        image_content = tf.read_file(image_paths)
-        images = tf.image.decode_png(image_content, channels=1)
-
-        mask_content = tf.read_file(label_paths)
-        masks = tf.image.decode_png(mask_content, channels=1)
-
-        return images, masks
-
-    @staticmethod
-    def resize_data(image, mask):
-        image = tf.image.resize_images(image, [128, 128])
-        mask = tf.image.resize_images(mask, [128, 128])
-
-        return image, mask
-
-    @staticmethod
-    def normalize_data(image, mask):
-        image = image / 255.0
-        mask = mask / 255.0
-
-        return image, mask
-
-    def initialize(self, sess):
-        sess.run(self.training_init_op)
+    def initialize(self, sess, training):
+        if training:
+            sess.run(self.training_init_op)
+        else:
+            sess.run(self.testing_init_op)
 
     def get_input(self):
         return self.iterator.get_next()

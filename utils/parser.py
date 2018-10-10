@@ -52,7 +52,7 @@ def get_args():
                         type=float)
 
     parser.add_argument('-m', '--model_path',
-                        default='./models/tiramisu',
+                        default='./models/tiramisu/',
                         help='Directory to save trained models')
 
     parser.add_argument('-mk', '--max_to_keep',

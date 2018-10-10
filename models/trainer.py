@@ -38,7 +38,7 @@ class Trainer:
     # Train one epoch
     def train_epoch(self, epoch=None):
         # Initialize dataset
-        self.data_loader.initialize(self.sess)
+        self.data_loader.initialize(self.sess, True)
 
         # Initialize tqdm
         tt = tqdm(range(self.data_loader.num_iterations_train), total=self.data_loader.num_iterations_train,
@@ -73,7 +73,7 @@ class Trainer:
 
     def test(self, epoch):
         # Initialize dataset
-        self.data_loader.initialize(self.sess)
+        self.data_loader.initialize(self.sess, False)
 
         # Initialize tqdm
         tt = tqdm(range(self.data_loader.num_iterations_test), total=self.data_loader.num_iterations_test,
@@ -85,7 +85,6 @@ class Trainer:
         # Iterate over batches
         for cur_it in tt:
             loss, acc = self.sess.run([self.loss_node, self.acc_node], feed_dict={self.training: False})
-
             loss_per_epoch.update(loss)
             acc_per_epoch.update(acc)
 
