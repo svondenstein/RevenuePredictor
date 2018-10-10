@@ -48,7 +48,8 @@ prepareDataset() {
 	mv "./images/" "./test/"
 	unzip "train.zip" &> /dev/null
 	mkdir "./train/"
-	mv -t "./train/" "./images/" "./masks/"
+	mv "./images/" "./train/"
+	mv "./masks/" "./train/"
 	rm *.zip
 	echo "Done!"
 }
