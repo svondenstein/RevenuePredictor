@@ -114,9 +114,9 @@ class Tiramisu:
                 tf.add_to_collection('out', self.out)
 
         # Operators for the training process
-        #with tf.variable_scope('loss-acc'):
-            # self.loss =
-            # self.acc =
+        with tf.variable_scope('loss-acc'):
+            self.loss = tf.losses.sparse_softmax_cross_entropy(labels=self.mask, logits=self.out)
+            self.acc = tf.metrics.mean_iou(labels=self.mask, predictions=self.out, num_classes=self.config.classes)
 
         with tf.variable_scope('train_step'):
             self.optimizer = tf.train.AdamOptimizer(self.config.learning_rate)
