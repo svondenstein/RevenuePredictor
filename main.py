@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 #
 # Stephen Vondenstein, Matthew Buckley
 # 10/08/2018
@@ -45,6 +46,13 @@ def main():
             model.load(sess)
             print('Making predictions...')
             predicter.predict()
+        if config.optimize:
+            print('Initializing optimizer...')
+            optimizer = HyperEngineOptimizer(model, data, config)
+            print('Initializing model...')
+            model.load(sess)
+            print('Optimizing...')
+            optimizer.optimize()
 
     # Prepare submission
     if config.rle:

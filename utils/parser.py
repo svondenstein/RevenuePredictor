@@ -80,5 +80,9 @@ def get_args():
                         help='Validation split for training',
                         type=float)
 
+    parser.add_argument('-o', '--optimize',
+                        action='store_true',
+                        help='Perform model parameter optimization')
+
     FLAGS = parser.parse_args()
     return FLAGS
