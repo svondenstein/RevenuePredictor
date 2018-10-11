@@ -4,16 +4,16 @@
 #
 from tqdm import tqdm
 import tensorflow as tf
+from agents.baseagent import BaseAgent
 
 from utils.utility import AverageMeter
 
-class Trainer:
+class Trainer(BaseAgent):
     def __init__(self, sess, model, data, config):
-        self.config = config
+        BaseAgent.__init__(self, config)
 
         # Initialize local variables
         self.model = model
-        self.config = config
         self.sess = sess
         self.data_loader = data
 
@@ -22,8 +22,7 @@ class Trainer:
         self.sess.run(self.init)
 
         # Load the model
-        self.model.load(self.sess)
-
+        self.load(self.sess)
         self.image, self.mask, self.training, _ = tf.get_collection('inputs')
         self.train_op, self.loss_node, self.acc_node = tf.get_collection('train')
 
@@ -54,7 +53,7 @@ class Trainer:
 
         self.sess.run(self.model.increment_global_epoch_tensor)
 
-        self.model.save(self.sess)
+        self.save(self.sess)
 
         print('Epoch {} loss:{:.4f} -- acc:{:.4f}'.format(epoch + 1, loss_per_epoch.val, acc_per_epoch.val))
 

@@ -11,8 +11,9 @@ from helpers.data_generator import DataGenerator
 from utils.parser import get_args
 from utils.utility import create_dirs
 from utils.rle import prepare_submission
-from models.trainer import Trainer
-from models.predicter import Predicter
+from agents.trainer import Trainer
+from agents.predicter import Predicter
+from optimizer.tiramisu_hyper import HyperEngineOptimizer
 
 
 def main():
@@ -24,8 +25,6 @@ def main():
 
     # Set up test/train environment
     if config.infer or config.train:
-        # Set up common environment
-        sess = tf.Session()
         print('Loading data...')
         data = DataGenerator(config)
         print('Building model...')
@@ -46,13 +45,14 @@ def main():
             model.load(sess)
             print('Making predictions...')
             predicter.predict()
-        if config.optimize:
-            print('Initializing optimizer...')
-            optimizer = HyperEngineOptimizer(model, data, config)
-            print('Initializing model...')
-            model.load(sess)
-            print('Optimizing...')
-            optimizer.optimize()
+        sess.close()
+
+    # Optimize the parameters
+    if config.optimize:
+        print('Initializing optimizer...')
+        optimizer = HyperEngineOptimizer(config)
+        print('Optimizing...')
+        optimizer.optimize()
 
     # Prepare submission
     if config.rle:

@@ -29,9 +29,6 @@ class Tiramisu:
         # Initialize global epoch counter
         self.init_global_epoch()
 
-        # Initialize saver
-        self.saver = None
-
         # Initialize data loader
         self.data_loader = data_loader
 
@@ -49,7 +46,6 @@ class Tiramisu:
 
         # Build model and initialize saver
         self.build_model()
-        self.init_saver()
 
     def build_model(self):
         # Network parameters
@@ -132,20 +128,6 @@ class Tiramisu:
         tf.add_to_collection('train', self.loss)
         tf.add_to_collection('train', self.acc)
 
-    # Save checkpoint
-    def save(self, sess):
-        print('Saving model to {}...'.format(self.config.model_path))
-        self.saver.save(sess, self.config.model_path + 'epoch', self.global_epoch_tensor)
-        print("Model saved.")
-
-    # Load checkpoint
-    def load(self, sess):
-        latest_checkpoint = tf.train.latest_checkpoint(self.config.model_path)
-        if latest_checkpoint:
-            print('Loading model checkpoint {} ...'.format(latest_checkpoint))
-            self.saver.restore(sess, latest_checkpoint)
-            print("Model loaded.")
-
     # Initialize epoch counter
     def init_cur_epoch(self):
         with tf.variable_scope('cur_epoch'):
@@ -162,7 +144,3 @@ class Tiramisu:
     def init_global_epoch(self):
         self.global_epoch_tensor = tf.Variable(0, trainable=False, name='global_epoch')
         self.increment_global_epoch_tensor = self.global_epoch_tensor.assign(self.global_epoch_tensor + 1)
-
-    # Initialize tensorflow saver used for saving checkpoints
-    def init_saver(self):
-        self.saver = tf.train.Saver(max_to_keep=self.config.max_to_keep)

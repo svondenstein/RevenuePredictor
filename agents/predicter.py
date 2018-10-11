@@ -4,16 +4,16 @@
 #
 from tqdm import tqdm
 import tensorflow as tf
+from agents.baseagent import BaseAgent
 
 from helpers.postprocess import process
 
-class Predicter:
+class Predicter(BaseAgent):
     def __init__(self, sess, model, data, config):
-        self.config = config
+        BaseAgent.__init__(self, config)
 
         # Initialize local variables
         self.model = model
-        self.config = config
         self.sess = sess
         self.data_loader = data
 
@@ -22,7 +22,7 @@ class Predicter:
         self.sess.run(self.init)
 
         # Load the model
-        self.model.load(self.sess)
+        self.load(self.sess)
 
         _, _, self.training, self.image_name = tf.get_collection('inputs')
         self.image = tf.get_collection('out')
@@ -34,8 +34,6 @@ class Predicter:
         # Initialize tqdm
         tt = tqdm(range(self.data_loader.num_iterations_infer), total=self.data_loader.num_iterations_infer,
                   desc="Predicting ")
-
-        self.model.load(self.sess)
 
         # Iterate over batches
         for cur_it in tt:

@@ -84,5 +84,9 @@ def get_args():
                         action='store_true',
                         help='Perform model parameter optimization')
 
+    parser.add_argument('-op', '--optimizer_path',
+                        default='./optimizer/',
+                        help='Directory to save optimizer data')
+
     FLAGS = parser.parse_args()
     return FLAGS
