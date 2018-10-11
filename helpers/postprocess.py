@@ -2,7 +2,6 @@
 # Stephen Vondenstein, Matthew Buckley
 # 10/09/2018
 #
-import tensorflow as tf
 import cv2
 import os
 import numpy as np

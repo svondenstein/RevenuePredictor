@@ -1,0 +1,7 @@
+cv2
+tqdm
+scikit-image
+keras
+pandas
+numpy
+tensorflow
