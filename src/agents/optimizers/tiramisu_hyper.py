@@ -5,7 +5,7 @@
 #
 
 from src.agents.baseagent import BaseAgent
-from src.models.tiramisu import Tiramisu as tiramisu
+from src.models.tiramisu import Tiramisu
 import hyperengine as hype
 
 
@@ -29,7 +29,7 @@ class HyperEngineOptimizer(BaseAgent):
       # 'save_dir':
       # 'save_accuracy_limit': 0.9930,
     }
-    tiramisu(config=params)
+    Tiramisu(config=params)
     solver = hype.TensorflowSolver(data=data, hyper_params=params, **solver_params)
     return solver
 

@@ -7,8 +7,9 @@ import tensorflow as tf
 from src.models.layers import bn_relu_conv, transition_down, transition_up, softmax
 from src.utils.metrics import iou, cross_entropy
 
+
 class Tiramisu:
-    def __init__(self, data_loader, config):
+    def __init__(self, config):
         # Configuration parameters
         self.config = config
 
@@ -29,8 +30,8 @@ class Tiramisu:
         # Initialize global epoch counter
         self.init_global_epoch()
 
-        # Initialize data loader
-        self.data_loader = data_loader
+        # # Initialize data loader
+        # self.data_loader = data_loader
 
         # Define local variables
         self.image = None
@@ -55,8 +56,10 @@ class Tiramisu:
 
         # Inputs to the network
         with tf.variable_scope('inputs'):
-            self.image, self.mask, self.image_name = self.data_loader.get_input()
+            # self.image, self.mask, self.image_name = self.data_loader.get_input()
             self.training = tf.placeholder(tf.bool, name='Training_flag')
+            self.image = tf.placeholder(tf.float32, shape=[None, 128, 128],name='input')
+            self.mask = tf.placeholder(tf.int32, shape=[None, 128, 128], name='label') #Should this be boolean?
         tf.add_to_collection('inputs', self.image)
         tf.add_to_collection('inputs', self.mask)
         tf.add_to_collection('inputs', self.training)
