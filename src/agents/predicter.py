@@ -4,9 +4,9 @@
 #
 from tqdm import tqdm
 import tensorflow as tf
-from agents.baseagent import BaseAgent
+from src.agents.baseagent import BaseAgent
 
-from helpers.postprocess import process
+from src.helpers.postprocess import process
 
 class Predicter(BaseAgent):
     def __init__(self, sess, model, data, config):

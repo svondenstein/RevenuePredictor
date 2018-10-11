@@ -4,12 +4,8 @@
 # 10/11/2018
 #
 
-import os
-import tensorflow as tf
-from helpers.data_generator import DataGenerator
-
-from agents.baseagent import BaseAgent
-from models.tiramisu import Tiramisu as tiramisu
+from src.agents.baseagent import BaseAgent
+from src.models.tiramisu import Tiramisu as tiramisu
 import hyperengine as hype
 
 

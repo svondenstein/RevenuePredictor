@@ -5,7 +5,7 @@
 
 # from tqdm import tqdm
 import tensorflow as tf
-from helpers.data_generator import DataGenerator
+from src.helpers.data_generator import DataGenerator
 
 
 class BaseAgent:

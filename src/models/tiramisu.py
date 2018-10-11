@@ -4,8 +4,8 @@
 #
 import tensorflow as tf
 
-from models.layers import bn_relu_conv, transition_down, transition_up, softmax
-from utils.metrics import iou, cross_entropy
+from src.models.layers import bn_relu_conv, transition_down, transition_up, softmax
+from src.utils.metrics import iou, cross_entropy
 
 class Tiramisu:
     def __init__(self, data_loader, config):

@@ -4,16 +4,15 @@
 # 10/08/2018
 #
 import os
-import tensorflow as tf
 
-from models.tiramisu import Tiramisu
-from helpers.data_generator import DataGenerator
-from utils.parser import get_args
-from utils.utility import create_dirs
-from utils.rle import prepare_submission
-from agents.trainer import Trainer
-from agents.predicter import Predicter
-from optimizer.tiramisu_hyper import HyperEngineOptimizer
+from src.models.tiramisu import Tiramisu
+from src.helpers.data_generator import DataGenerator
+from src.utils.parser import get_args
+from src.utils.utility import create_dirs
+from src.utils.rle import prepare_submission
+from src.agents.trainer import Trainer
+from src.agents.predicter import Predicter
+from src.agents.optimizers.tiramisu_hyper import HyperEngineOptimizer
 
 
 def main():

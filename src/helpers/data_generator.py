@@ -5,7 +5,7 @@
 import os
 
 import tensorflow as tf
-from helpers.preprocess import process
+from src.helpers.preprocess import process
 
 # Some of this needs to change when validation split is implemented
 class DataGenerator:

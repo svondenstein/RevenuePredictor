@@ -4,9 +4,9 @@
 #
 from tqdm import tqdm
 import tensorflow as tf
-from agents.baseagent import BaseAgent
+from src.agents.baseagent import BaseAgent
 
-from utils.utility import AverageMeter
+from src.utils.utility import AverageMeter
 
 class Trainer(BaseAgent):
     def __init__(self, sess, model, data, config):
