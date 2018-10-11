@@ -3,7 +3,6 @@
 # 10/09/2018
 #
 import tensorflow as tf
-from imgaug import augmenters as iaa
 
 def process(dataset, training, config):
     dataset = dataset.map(parse_data, num_parallel_calls=config.batch_size)
@@ -44,10 +43,7 @@ def augment_data(dataset, config):
     return dataset
 
 def flip_data(image, mask, name):
-    seq = iaa.Sequential({
-        iaa.Fliplr(0.5)
-    }, random_order=True)
-    image_aug = seq.augment_image(image)
-    mask_aug = seq.augment_image(mask)
+    image = tf.image.flip_left_right(image)
+    mask = tf.image.flip_left_right(mask)
 
-    return image_aug, mask_aug, name
+    return image, mask, name
