@@ -80,7 +80,7 @@ The following is a list of arguments with definitions and default values for use
 | `-k`, `--growth_k` | Growth rate for Tiramisu | **16** |
 | `-lr`, `--learning_rate` | Learning rate for the optimizer | **1e-3** |
 | `-m`, `--model_path` | Path to the directory in which to save trained models | **`models/tiramisu/`** |
-| `-mk`, `--max_to_keep` | Maximum number of epoch checkpoints to save -- to disable, use 0 | **0** |
+| `-mk`, `--max_to_keep` | Maximum number of epoch checkpoints to save -- to keep all checkpoints, use 0 | **5** |
 | `-p`, `--prediction_path` | Path to the directory in which to save predictions | **`predictions/`** |
 | `-r`, `--rle` | When present, the program will compute the rle and prepare a submission | _false_ |
 | `-s`, `--submission_path` | Path to the directory in which to save submissions | **`submissions/`** |

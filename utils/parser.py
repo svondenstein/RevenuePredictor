@@ -55,7 +55,7 @@ def get_args():
                         help='Directory to save trained models')
 
     parser.add_argument('-mk', '--max_to_keep',
-                        default=0,
+                        default=5,
                         help='Maximum number of models to save',
                         type=int)
 
