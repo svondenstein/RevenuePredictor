@@ -58,7 +58,7 @@ class Tiramisu:
         with tf.variable_scope('inputs'):
             # self.image, self.mask, self.image_name = self.data_loader.get_input()
             self.training = tf.placeholder(tf.bool, name='Training_flag')
-            self.image = tf.placeholder(tf.float32, shape=[None, 128, 128],name='input')
+            self.image = tf.placeholder(tf.float32, shape=[None, 128, 128, 1],name='input')
             self.mask = tf.placeholder(tf.int32, shape=[None, 128, 128], name='label') #Should this be boolean?
         tf.add_to_collection('inputs', self.image)
         tf.add_to_collection('inputs', self.mask)
@@ -118,14 +118,14 @@ class Tiramisu:
 
         # Operators for the training process
         with tf.variable_scope('loss-acc'):
-            self.loss = cross_entropy(self.out, self.mask, self.config.classes)
-            self.acc = iou(self.out, self.mask, self.config.classes)
+            self.loss = cross_entropy(self.out, self.mask, self.config.classes, name='loss')
+            self.acc = iou(self.out, self.mask, self.config.classes, name='accuracy')
 
         with tf.variable_scope('train_step'):
             self.optimizer = tf.train.AdamOptimizer(self.config.learning_rate)
             update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
             with tf.control_dependencies(update_ops):
-                self.train_step = self.optimizer.minimize(self.loss, global_step=self.global_step_tensor)
+                self.train_step = self.optimizer.minimize(self.loss, global_step=self.global_step_tensor, name='minimize')
 
         tf.add_to_collection('train', self.train_step)
         tf.add_to_collection('train', self.loss)
