@@ -6,6 +6,8 @@ import tensorflow as tf
 
 from models.layers import bn_relu_conv, transition_down, transition_up, softmax
 from utils.metrics import iou, cross_entropy
+from helpers.preprocess import tile_image
+from helpers.postprocess import tile_crop
 
 class Tiramisu:
     def __init__(self, data_loader, config):
@@ -61,6 +63,7 @@ class Tiramisu:
         with tf.variable_scope('inputs'):
             self.image, self.mask, self.image_name = self.data_loader.get_input()
             self.training = tf.placeholder(tf.bool, name='Training_flag')
+            self.image = tile_image(self.image)
         tf.add_to_collection('inputs', self.image)
         tf.add_to_collection('inputs', self.mask)
         tf.add_to_collection('inputs', self.training)
@@ -115,6 +118,8 @@ class Tiramisu:
             # Softmax
             with tf.variable_scope('out'):
                 self.out = softmax(self.stack, self.config.classes, 'softmax')
+                self.out = tf.argmax(self.out, axis=3, name='argmax')
+                self.out = tile_crop(self.out)
                 tf.add_to_collection('out', self.out)
 
         # Operators for the training process

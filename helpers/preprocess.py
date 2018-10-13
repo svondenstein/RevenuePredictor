@@ -7,8 +7,6 @@ import math
 
 def process(dataset, training, config, len):
     dataset = dataset.map(parse_data, num_parallel_calls=config.batch_size)
-    # dataset = dataset.map(resize_data, num_parallel_calls=config.batch_size)
-    dataset = dataset.map(tile_data, num_parallel_calls=config.batch_size)
     dataset = dataset.map(normalize_data, num_parallel_calls=config.batch_size)
     if config.augment and training:
         dataset = dataset.concatenate(augment_data(dataset, config))
@@ -53,11 +51,11 @@ def augment_data(dataset, config):
 
 # Tiles the image with flipped tiles and then crops
 def tile_image(image):
+    batched = (len(image.shape) == 4) #If already batched
     top_flip = tf.image.flip_up_down(image)
-    tall_image = tf.concat([top_flip,image,top_flip], 0)
+    tall_image = tf.concat([top_flip,image,top_flip], batched)
     tall_flipped = tf.image.flip_left_right(tall_image)
-    complete_tiled = tf.concat([tall_flipped,tall_image,tall_flipped], 1)
-
+    complete_tiled = tf.concat([tall_flipped,tall_image,tall_flipped], batched+1)
     corner = math.ceil((3*101-128)/2)  # Just for clarity
     final = tf.image.crop_to_bounding_box(complete_tiled, corner, corner, 128, 128)
     return final
