@@ -76,7 +76,7 @@ def flip_data(image, mask, name):
 
 def stretch_data(image, mask, name):
     factor = random.uniform(0, 1)
-    stretched_image = tf.image.resize(tf.image.central_crop(image, factor), [image.get_shape()[1], image.get_shape()[2]])
-    stretched_mask = tf.image.resize(tf.image.central_crop(mask, factor), [mask.get_shape()[1], mask.get_shape()[2]])
+    stretched_image = tf.image.resize_images(tf.image.central_crop(image, factor), [image.get_shape()[1], image.get_shape()[2]])
+    stretched_mask = tf.image.resize_images(tf.image.central_crop(mask, factor), [mask.get_shape()[1], mask.get_shape()[2]])
 
     return stretched_image, stretched_mask, name
