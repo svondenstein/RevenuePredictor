@@ -39,6 +39,8 @@ def main():
             print('Training model...')
             trainer.train()
         if config.infer:
+            print('Creating prediction save directory...')
+            create_dirs([config.prediction_path])
             print('Initializing predicter...')
             predicter = Predicter(sess, model, data, config)
             print('Initializing model...')
@@ -48,6 +50,8 @@ def main():
 
     # Prepare submission
     if config.rle:
+        print('Creating submission save directory...')
+        create_dirs([config.submission_path])
         prepare_submission(config.prediction_path, config.submission_path, 101, 101)
 
     print('Done!')
