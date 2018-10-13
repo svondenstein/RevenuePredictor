@@ -6,6 +6,7 @@ import cv2
 import os
 import numpy as np
 import tensorflow as tf
+import math
 
 
 def process(image, name, config):
@@ -16,7 +17,8 @@ def process(image, name, config):
 
 # de-tile the image
 def tile_crop(image):
-    out = tf.image.crop_to_bounding_box(image, 13, 13, 101, 101)
+    offset = math.floor((128-101)/2)  # Half the margin between the sizes
+    out = tf.image.crop_to_bounding_box(image, offset, offset, 101, 101)
     return out
 
 
