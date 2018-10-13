@@ -9,6 +9,7 @@ from utils.metrics import iou, cross_entropy
 from helpers.preprocess import tile_image
 from helpers.postprocess import tile_crop
 
+
 class Tiramisu:
     def __init__(self, data_loader, config):
         # Configuration parameters
@@ -118,14 +119,15 @@ class Tiramisu:
             # Softmax
             with tf.variable_scope('out'):
                 self.out = softmax(self.stack, self.config.classes, 'softmax')
-                self.out = tf.argmax(self.out, axis=3, name='argmax')
+                print(self.out.get_shape())
                 self.out = tile_crop(self.out)
+                print(self.out.get_shape())
                 tf.add_to_collection('out', self.out)
 
         # Operators for the training process
         with tf.variable_scope('loss-acc'):
             self.loss = cross_entropy(self.out, self.mask, self.config.classes)
-            self.acc = iou(self.out, self.mask, self.config.classes)
+            self.acc = iou(self.out, self.mask)
 
         with tf.variable_scope('train_step'):
             self.optimizer = tf.train.AdamOptimizer(self.config.learning_rate)
