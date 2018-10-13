@@ -7,8 +7,6 @@ import tensorflow as tf
 
 def process(dataset, training, config, len):
     dataset = dataset.map(parse_data, num_parallel_calls=config.batch_size)
-    # dataset = dataset.map(resize_data, num_parallel_calls=config.batch_size)
-    dataset = dataset.map(tile_data, num_parallel_calls=config.batch_size)
     dataset = dataset.map(normalize_data, num_parallel_calls=config.batch_size)
     if config.augment and training:
         dataset = dataset.concatenate(augment_data(dataset, config))
@@ -57,7 +55,6 @@ def tile_image(image):
     tall_image = tf.concat([top_flip,image,top_flip], 0)
     tall_flipped = tf.image.flip_left_right(tall_image)
     complete_tiled = tf.concat([tall_flipped,tall_image,tall_flipped], 1)
-    # print(complete_tiled.shape[0])
     final = tf.image.crop_to_bounding_box(complete_tiled, (101-13), (101-13), 128, 128)
     return final
 
