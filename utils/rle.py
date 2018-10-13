@@ -69,5 +69,11 @@ def prepare_submission(source_dir, output_path):
     sub = pd.DataFrame.from_dict(pred_dict, orient='index')
     sub.index.names = ['id']
     sub.columns = ['rle_mask']
-    sub.to_csv(output_path + 'submission.csv')
-    print('Submission saved to ' + output_path + 'submission.csv')
+
+    i = 1
+    while os.path.exists(os.path.join(output_path, 'submission-%s.csv' % i)):
+        i += 1
+    submission_path = output_path + 'submission-' + str(i) + '.csv'
+    sub.to_csv(submission_path)
+
+    print('Submission saved to ' + submission_path)
