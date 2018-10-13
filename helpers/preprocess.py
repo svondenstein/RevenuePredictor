@@ -3,7 +3,7 @@
 # 10/09/2018
 #
 import tensorflow as tf
-
+import math
 
 def process(dataset, training, config, len):
     dataset = dataset.map(parse_data, num_parallel_calls=config.batch_size)
@@ -57,8 +57,9 @@ def tile_image(image):
     tall_image = tf.concat([top_flip,image,top_flip], 0)
     tall_flipped = tf.image.flip_left_right(tall_image)
     complete_tiled = tf.concat([tall_flipped,tall_image,tall_flipped], 1)
-    # print(complete_tiled.shape[0])
-    final = tf.image.crop_to_bounding_box(complete_tiled, (101-13), (101-13), 128, 128)
+
+    corner = math.ceil((3*101-128)/2)  # Just for clarity
+    final = tf.image.crop_to_bounding_box(complete_tiled, corner, corner, 128, 128)
     return final
 
 
