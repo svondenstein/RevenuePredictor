@@ -42,6 +42,7 @@ downloadDataset() {
 # Unzip and prepare dataset
 prepareDataset() {
 	echo "Organizing dataset..."
+	mkdir ../submissions/
 	mv "./sample_submission.csv" "../submissions/"
 	unzip "test.zip" &> /dev/null
 	mkdir "./test"
