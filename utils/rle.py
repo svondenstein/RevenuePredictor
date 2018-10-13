@@ -40,20 +40,15 @@ def rle(img, order='F', format=True):
         return runs
 
 
-def prepare_submission(source_dir, output_path, image_height, image_width):
+def prepare_submission(source_dir, output_path):
     pred_ids = next(os.walk(source_dir))[2]
-    preds = np.zeros((len(pred_ids), image_width, image_width), dtype=np.uint8)
+    preds = []
     
-    print("Resizing " + str(len(pred_ids)) + " images to " + str(image_width) + " by " + str(image_height) + "...")
+    print("Loading " + str(len(pred_ids)) + " images...")
     for i, id_ in enumerate(pred_ids):
-        path = source_dir
-        img = image.load_img(path + '/' + id_)
+        img = image.load_img(source_dir + '/' + id_)
         x = image.img_to_array(img)[:, :, 1]
-        x = resize(x, (image_width, image_height), mode='constant', preserve_range=True)
         preds[i] = x
-        if i % (len(pred_ids)/5) == 0 and i != 0:
-            print("Resized " + str(i) + " images [" + str(100*i/len(pred_ids)) + "%]")
-    print("Resized " + str(len(pred_ids)) + " images [100.0%]")
 
     print("Computing RLE of " + str(len(pred_ids)) + " images...")
     pred_dict = {}
