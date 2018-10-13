@@ -7,8 +7,9 @@ import tensorflow as tf
 
 from utils.utility import AverageMeter
 
+
 class Trainer:
-    def __init__(self, sess, model, data, config):
+    def __init__(self, sess, model, data, config, logger):
         self.config = config
 
         # Initialize local variables
@@ -16,6 +17,7 @@ class Trainer:
         self.config = config
         self.sess = sess
         self.data_loader = data
+        self.logger = logger
 
         # Initialize all variables of the graph
         self.init = tf.global_variables_initializer(), tf.local_variables_initializer()
@@ -54,6 +56,11 @@ class Trainer:
 
         self.sess.run(self.model.increment_global_epoch_tensor)
 
+        # summarize
+        summaries_dict = {'train/loss_per_epoch': loss_per_epoch.val,
+                          'train/acc_per_epoch': acc_per_epoch.val}
+        self.logger.summarize(self.model.global_step_tensor.eval(self.sess), summaries_dict)
+
         self.model.save(self.sess)
 
         print('Epoch {} loss:{:.4f} -- acc:{:.4f}'.format(epoch + 1, loss_per_epoch.val, acc_per_epoch.val))
@@ -81,6 +88,11 @@ class Trainer:
             loss, acc = self.sess.run([self.loss_node, self.acc_node], feed_dict={self.training: False})
             loss_per_epoch.update(loss)
             acc_per_epoch.update(acc)
+
+        # summarize
+        summaries_dict = {'test/loss_per_epoch': loss_per_epoch.val,
+                          'test/acc_per_epoch': acc_per_epoch.val}
+        self.logger.summarize(self.model.global_step_tensor.eval(self.sess), summaries_dict)
 
         print('Val {} loss:{:.4f} -- acc:{:.4f}'.format(epoch + 1, loss_per_epoch.val, acc_per_epoch.val))
 

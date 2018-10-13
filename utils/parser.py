@@ -45,6 +45,10 @@ def get_args():
                         help='Growth rate',
                         type=int)
 
+    parser.add_argument('-l', '--log_path',
+                        default='./models/tensorboard/',
+                        help='Directory to save tensorboard logs')
+
     parser.add_argument('-lr', '--learning_rate',
                         default=1e-3,
                         help='Learning rate for optimizer',
