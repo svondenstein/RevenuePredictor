@@ -118,6 +118,7 @@ class Tiramisu:
             # Softmax
             with tf.variable_scope('out'):
                 self.out = softmax(self.stack, self.config.classes, 'softmax')
+                self.out = tf.argmax(self.out, axis=3, name='argmax')
                 self.out = tile_crop(self.out)
                 tf.add_to_collection('out', self.out)
 
