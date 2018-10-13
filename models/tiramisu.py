@@ -119,9 +119,7 @@ class Tiramisu:
             # Softmax
             with tf.variable_scope('out'):
                 self.out = softmax(self.stack, self.config.classes, 'softmax')
-                print(self.out.get_shape())
                 self.out = tile_crop(self.out)
-                print(self.out.get_shape())
                 tf.add_to_collection('out', self.out)
 
         # Operators for the training process
