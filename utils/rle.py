@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import os
 from keras.preprocessing import image
-from skimage.transform import resize
+from tqdm import tqdm
 
 
 def rle(img, order='F', format=True):
@@ -43,21 +43,27 @@ def rle(img, order='F', format=True):
 def prepare_submission(source_dir, output_path):
     pred_ids = next(os.walk(source_dir))[2]
     preds = []
-    
-    print("Loading " + str(len(pred_ids)) + " images...")
-    for i, id_ in enumerate(pred_ids):
-        img = image.load_img(source_dir + '/' + id_)
-        x = image.img_to_array(img)[:, :, 1]
-        preds[i] = x
 
-    print("Computing RLE of " + str(len(pred_ids)) + " images...")
+    tt = tqdm(range(len(pred_ids)), total=len(pred_ids),
+              desc="Loading ")
+
+    for t in tt:
+        img = image.load_img(source_dir + '/' + pred_ids[t])
+        x = image.img_to_array(img)[:, :, 1]
+        preds.append(x)
+
+    tt.close()
+
+    tt = tqdm(range(len(pred_ids)), total=len(pred_ids),
+              desc="Computing RLE ")
+
     pred_dict = {}
     for i, fn in enumerate(pred_ids):
         pred_dict_val = {fn[:-4]: rle(np.round(preds[i]))}
         pred_dict.update(pred_dict_val)
-        if i % (len(pred_ids)/5) == 0 and i != 0:
-            print("Computed RLE for " + str(i) + " images [" + str(100*i/len(pred_ids)) + "%]")
-    print("Computed RLE for " + str(len(pred_ids)) + " images [100.0%]")
+        tt.update()
+
+    tt.close()
 
     print('Preparing submission...')
     sub = pd.DataFrame.from_dict(pred_dict, orient='index')
