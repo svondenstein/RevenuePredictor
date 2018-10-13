@@ -125,7 +125,7 @@ class Tiramisu:
         # Operators for the training process
         with tf.variable_scope('loss-acc'):
             self.loss = cross_entropy(self.out, self.mask, self.config.classes)
-            self.acc = iou(self.out, self.mask)
+            self.acc = iou(self.out, self.mask, self.config.batch_size)
 
         with tf.variable_scope('train_step'):
             self.optimizer = tf.train.AdamOptimizer(self.config.learning_rate)
