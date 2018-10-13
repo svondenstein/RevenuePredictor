@@ -22,6 +22,13 @@ def main():
     # Get configuration
     config = get_args()
 
+    # Optimize the parameters
+    if config.optimize:
+        print('Initializing optimizer...')
+        optimizer = HyperEngineOptimizer(config)
+        print('Optimizing...')
+        optimizer.optimize()
+
     # Set up test/train environment
     if config.infer or config.train:
         print('Loading data...')
@@ -34,24 +41,16 @@ def main():
             print('Initializing trainer...')
             trainer = Trainer(sess, model, data, config)
             print('Initializing model...')
-            model.load(sess)
+            trainer.load(sess)
             print('Training model...')
             trainer.train()
         if config.infer:
             print('Initializing predicter...')
             predicter = Predicter(sess, model, data, config)
             print('Initializing model...')
-            model.load(sess)
+            predicter.load(sess)
             print('Making predictions...')
             predicter.predict()
-        sess.close()
-
-    # Optimize the parameters
-    if config.optimize:
-        print('Initializing optimizer...')
-        optimizer = HyperEngineOptimizer(config)
-        print('Optimizing...')
-        optimizer.optimize()
 
     # Prepare submission
     if config.rle:
