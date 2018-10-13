@@ -17,7 +17,7 @@ def bn_relu_conv(inputs, filters, dropout, training, name, filter_size=3):
                              kernel_initializer=tf.contrib.layers.variance_scaling_initializer(),
                              name=name+'_conv' + str(filter_size) + 'x' + str(filter_size))
         if dropout != 0.0:
-            l = tf.layers.dropout(l, rate=dropout, training=training, name=name+'_dropout', noise_shape=[l.shape[0],1,1,l.shape[3]])
+            l = tf.layers.dropout(l, rate=dropout, training=training, name=name+'_dropout')
 
     return l
 
@@ -38,7 +38,7 @@ def transition_up(skip_connection, block, filters, name):
                                        filters=filters,
                                        kernel_size=3,
                                        strides=2,
-                                       padding='same',
+                                       padding='SAME',
                                        activation='relu',
                                        kernel_initializer=tf.contrib.layers.variance_scaling_initializer(),
                                        name=name+'_trans_conv_3x3')
