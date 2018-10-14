@@ -13,13 +13,11 @@ from utils.rle import prepare_submission
 from models.trainer import Trainer
 from models.predicter import Predicter
 from utils.logger import Logger
-from tensorboard import default
-from tensorboard import program
 
 
 def main():
     # Set Tensorflow verbosity
-    #os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
     # Get configuration
     config = get_args()
@@ -39,9 +37,6 @@ def main():
             logger = Logger(sess, summary_dir=config.log_path,
                             scalar_tags=['train/loss_per_epoch', 'train/acc_per_epoch',
                                          'test/loss_per_epoch', 'test/acc_per_epoch'])
-            tb = program.TensorBoard(default.PLUGIN_LOADERS, default.get_assets_zip_provider())
-            tb.configure(argv=[None, '--logdir', config.log_path])
-            tb.main()
             print('Initializing trainer...')
             trainer = Trainer(sess, model, data, config, logger)
             print('Initializing model...')
