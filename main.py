@@ -57,7 +57,7 @@ def main():
     if config.rle:
         print('Creating submission save directory...')
         create_dirs([config.submission_path])
-        prepare_submission(config.prediction_path, config.submission_path)
+        prepare_submission(config.prediction_path, config.submission_path, 'submission')
 
     print('Done!')
 

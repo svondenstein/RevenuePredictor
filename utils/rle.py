@@ -40,7 +40,7 @@ def rle(img, order='F', format=True):
         return runs
 
 
-def prepare_submission(source_dir, output_path):
+def prepare_submission(source_dir, output_path, sub_prefix):
     pred_ids = next(os.walk(source_dir))[2]
     preds = []
 
@@ -71,9 +71,13 @@ def prepare_submission(source_dir, output_path):
     sub.columns = ['rle_mask']
 
     i = 1
-    while os.path.exists(os.path.join(output_path, 'submission-%s.csv' % i)):
+    submission_file = ('{0}-{1}.csv'.format(sub_prefix, i))
+    while os.path.exists(os.path.join(output_path, submission_file)):
         i += 1
-    submission_path = output_path + 'submission-' + str(i) + '.csv'
+        submission_file = ('{0}-{1}.csv'.format(sub_prefix, i))
+    submission_path = os.path.join(output_path, submission_file)
     sub.to_csv(submission_path)
 
     print('Submission saved to ' + submission_path)
+
+    return submission_path
