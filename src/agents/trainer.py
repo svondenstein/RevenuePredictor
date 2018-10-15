@@ -69,7 +69,7 @@ class Trainer(BaseAgent):
 
 
     def train_step(self, sess):
-        _, loss, acc = self.sess.run([self.train_op, self.loss_node, self.acc_node], feed_dict={self.training: True})
+        _, loss, acc = sess.run([self.train_op, self.loss_node, self.acc_node], feed_dict={self.training: True})
         return loss, acc
 
     def test(self, sess, epoch):

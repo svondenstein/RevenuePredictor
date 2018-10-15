@@ -42,11 +42,6 @@ class HyperEngineOptimizer(BaseAgent):
       'io_save_dir': self.config.optimizer_path
     }
 
-
-
-
-
-
   def solver_generator(self, params):
     solver_params = {
       'batch_size': self.config.batch_size,
