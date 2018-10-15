@@ -22,7 +22,7 @@ def csv_to_image(csv):
         rle = csv.loc[i, 'rle_mask']
         rle = str(rle).split()
         image = rle_to_image(rle)
-        images[i] = image
+        images.append(image)
 
     return images
 
