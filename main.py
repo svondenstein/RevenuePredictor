@@ -31,24 +31,20 @@ def main():
 
     # Set up test/train environment
     if config.infer or config.train:
-        print('Loading data...')
-        data = DataGenerator(config)
-        print('Building model...')
-        model = Tiramisu(data, config)
+        # print('Building model...')
+        model = Tiramisu(config)
         if config.train:
             print('Creating model save directories...')
             create_dirs([config.model_path])
             print('Initializing trainer...')
-            trainer = Trainer(sess, model, data, config)
+            trainer = Trainer(model, config)
             print('Initializing model...')
-            trainer.load(sess)
+            trainer.load()
             print('Training model...')
             trainer.train()
         if config.infer:
             print('Initializing predicter...')
-            predicter = Predicter(sess, model, data, config)
-            print('Initializing model...')
-            predicter.load(sess)
+            predicter = Predicter(model, config)
             print('Making predictions...')
             predicter.predict()
 

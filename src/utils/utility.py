@@ -4,6 +4,16 @@
 #
 import os
 
+# TODO: generalize to create from model param file
+# Ensure model parameters 
+def generate_params(config):
+    params = {
+        'learning_rate': config.learning_rate,
+        ''
+
+
+    }
+
 
 def create_dirs(dirs):
     try:
