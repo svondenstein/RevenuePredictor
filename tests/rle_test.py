@@ -17,10 +17,8 @@ def compare_rle(input_path, output_path):
     # Ensure submission_path is created
     create_dirs([output_path])
     # Get paths
-    test_rle = get_max_filename(input_path, 'test', '.csv')
-    test_path = os.path.join(input_path, test_rle)
-    sort_rle = get_max_unused_filename(output_path, 'test', '.csv')
-    sort_path = os.path.join(output_path, sort_rle)
+    test_path = get_max_filename(input_path, 'test', '.csv')
+    sort_path = get_max_unused_filename(output_path, 'test', '.csv')
 
     print('Comparing RLE values...')
     # Sort csv files
