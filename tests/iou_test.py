@@ -41,7 +41,7 @@ def rle_to_image(rle):
 def mean_iou(source, test):
     ious = []
     length = tqdm(range(len(source)), total=len(source), desc="Computing IoU ")
-    for i in length):
+    for i in length:
         iou = calculate_iou(source[i], test[i])
         ious.append(iou)
     return np.mean(ious)
