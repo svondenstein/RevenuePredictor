@@ -15,6 +15,7 @@ from utils.parser import get_args
 from utils.utility import create_dirs
 from utils.rle import prepare_submission
 from tests.rle_test import compare_rle
+from tests.iou_test import compare_iou
 from helpers.postprocess import data_crop
 from helpers.preprocess import tile_data
 from helpers.data_generator import DataGenerator
@@ -64,6 +65,7 @@ def test_io():
     # Compute RLEs for saved masks
     prepare_submission('./image_tests/detiled/masks/', config.submission_path, 'test')
     compare_rle('./image_tests/', './rle_tests/')
+    compare_iou('./rle_tests/')
 
     print('Done!')
 
