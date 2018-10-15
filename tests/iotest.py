@@ -25,7 +25,7 @@ def test_io():
 
     config = get_args()
     print('Creating save directories...')
-    create_dirs(['./image_tests/', './image_tests'
+    create_dirs(['./image_tests/',
                  './image_tests/tiled/', './image_tests/tiled/images/', './image_tests/tiled/masks/',
                  './image_tests/detiled', './image_tests/detiled/images/', './image_tests/detiled/masks/',
                  config.submission_path])
@@ -62,7 +62,7 @@ def test_io():
     # Close progress bar
     batches.close()
     # Compute RLEs for saved masks
-    rle = prepare_submission('./image_tests/detiled/masks/', config.submission_path, 'test')
+    prepare_submission('./image_tests/detiled/masks/', config.submission_path, 'test')
     compare_rle('./image_tests/', './rle_tests/')
 
     print('Done!')
