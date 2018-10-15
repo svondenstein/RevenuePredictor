@@ -35,7 +35,7 @@ def main():
     with tf.Session() as sess:
         # Initialize data generator
         data_loader.initialize(sess, 'train')
-        for i in range(batches):
+        for i in batches:
             # Get a batch and tile it
             image, mask, name = sess.run(tile_data(*data_loader.get_input()))
             # Save tiled images
