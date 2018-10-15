@@ -38,8 +38,7 @@ def normalize_data(image, mask, name):
     image = tf.cast(image, tf.float32)
     image = image / 255.0
 
-    mask = tf.cast(mask, tf.float32)
-    mask = mask / 255.0
+    mask = mask // 255
 
     return image, mask, name
 
