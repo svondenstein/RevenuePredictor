@@ -28,7 +28,7 @@ class DataGenerator:
 
         # Calculate the max number of iterations based on batch size
         self.num_iterations_test = self.test_size // self.config.batch_size
-        self.num_iterations_train = (self.train_size // self.config.batch_size) * 4 if self.config.augment else self.train_size // self.config.batch_size
+        self.num_iterations_train = (self.train_size // self.config.batch_size) * 2 if self.config.augment else self.train_size // self.config.batch_size
         self.num_iterations_infer = self.infer_size // self.config.batch_size
 
         # Create tensors containing image paths

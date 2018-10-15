@@ -11,7 +11,7 @@ def process(dataset, training, config, len):
     dataset = dataset.map(normalize_data, num_parallel_calls=config.batch_size)
     if config.augment and training:
         dataset = dataset.concatenate(augment_data(dataset, config))
-        dataset = dataset.shuffle(len * 4)
+        dataset = dataset.shuffle(len * 2)
     dataset = dataset.batch(config.batch_size)
 
     return dataset
@@ -47,8 +47,9 @@ def normalize_data(image, mask, name):
 def augment_data(dataset, config):
     flip = dataset.map(flip_data, num_parallel_calls=config.batch_size)
     dataset = dataset.concatenate(flip)
-    stretch = dataset.map(stretch_data, num_parallel_calls=config.batch_size)
-    return flip.concatenate(stretch)
+    # stretch = dataset.map(stretch_data, num_parallel_calls=config.batch_size)
+    # return data.concatenate(stretch)
+    return dataset
 
 
 # Tiles the image with flipped tiles and then crops
