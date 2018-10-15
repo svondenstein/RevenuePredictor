@@ -50,7 +50,8 @@ class DataGenerator:
         self.train_data = self.dataset.skip(tf.cast(len(self.image_paths) * self.config.validation_split, tf.int64))
 
         # Preprocess datasets
-        self.test_data = process(self.test_data, False, self.config, self.test_size)
+        self.test_data = process(self.test_data, False, self.config, self.test_size) if \
+            self.config.validation_split != 0.0 else process(self.train_data, False, self.config, self.train_size)
         self.train_data = process(self.train_data, True, self.config, self.train_size)
         self.infer_data = process(self.infer_data, False, self.config, self.infer_size)
         self.debug_data = process(self.dataset, False, self.config, self.debug_size)
