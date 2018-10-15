@@ -29,7 +29,7 @@ def main():
     data_loader = DataGenerator(config)
 
     # Progress bar
-    batches = tqdm(range(data_loader.num_iterations_debug), total=data_loader.num_iterations_train,
+    batches = tqdm(range(data_loader.num_iterations_debug), total=data_loader.num_iterations_debug,
               desc="Processing Batches ")
 
     # Use session to evaluate real tensors
