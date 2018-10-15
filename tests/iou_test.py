@@ -40,11 +40,34 @@ def rle_to_image(rle):
 
 def mean_iou(source, test):
     ious = []
-    length = tqdm(range(len(source)), total=len(source), desc="Computing IoU ")
+    length = tqdm(range(len(source)), total=len(source), desc="Computing IoU A")
     for i in length:
         iou = calculate_iou(source[i], test[i])
         ious.append(iou)
     return np.mean(ious)
+
+def vector_iou(source, test):
+    length = tqdm(range(len(source)), total=len(source), desc="Computing IoU B ")
+    metric = []
+    epsilon = 1e-15
+    for i in length:
+        s = source[i] / 255
+        t = test[i] / 255
+        if s.sum() == 0 and t.sum() == 0:
+            metric.append(1.0)
+        elif s.sum() == 0 and t.sum() != 0:
+            metric.append(0.0)
+        else:
+            intersection = (s * t).sum()
+            union = s.sum() + t.sum() - intersection
+            iou = ((intersection + epsilon) / (union + epsilon))
+            thresholds = np.arange(0.5, 0.95, 0.05)
+            miou = []
+            for thresh in thresholds:
+                miou.append(iou > thresh)
+            metric.append(np.mean(miou))
+
+    return np.mean(metric)
 
 def calculate_iou(source, test):
     if source.sum() == 0:
@@ -70,8 +93,10 @@ def compare_iou(input_path):
     source_images = csv_to_image(source)
     test_images = csv_to_image(test)
     # Compute IoU values
-    print('Comparing IoU values...')
-    print('Mean IoU: ' + str(mean_iou(source_images, test_images)))
+    iou_a = mean_iou(source_images, test_images)
+    iou_b = vector_iou(source_images, test_images)
+    print('Mean IoU A: ' + str(iou_a))
+    print('Mean IoU B: ' + str(iou_b))
 
 
 if __name__ == '__main__':
