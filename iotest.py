@@ -16,13 +16,13 @@ from helpers.preprocess import tile_data
 
 def main():
     # Set Tensorflow verbosity
-    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '4'
 
     config = get_args()
     print('Creating save directories...')
-    create_dirs(['./image_tests/',
-                 './image_tests/tiled/', './image_tests/tiled/images/', './images_tests/tiled/masks/',
-                 './image_tests/detiled', './image_tests/detiled/images/', './images_tests/detiled/masks/',
+    create_dirs(['./image_tests/', './image_tests'
+                 './image_tests/tiled/', './image_tests/tiled/images/', './image_tests/tiled/masks/',
+                 './image_tests/detiled', './image_tests/detiled/images/', './image_tests/detiled/masks/',
                  config.submission_path])
     print('Initializing data loader...')
     data_loader = DataGenerator(config)
@@ -34,7 +34,7 @@ def main():
     # Use session to evaluate real tensors
     with tf.Session() as sess:
         # Initialize data generator
-        data_loader.initialize(sess, 'train')
+        data_loader.initialize(sess, 'debug')
         for i in batches:
             # Get a batch and tile it
             image, mask, name = sess.run(tile_data(*data_loader.get_input()))
@@ -56,12 +56,12 @@ def main():
     # Close progress bar
     batches.close()
     # Compute RLEs for saved masks
-    rle = prepare_submission('./image_tests/detiled/', config.submission_path, 'iotest')
+    rle = prepare_submission('./image_tests/detiled/masks/', config.submission_path, 'iotest')
     print('Comparing RLE values...')
     subprocess.Popen("sort ./data/train.csv > ./image_tests/source.csv", shell=True)
     subprocess.Popen("sort " + rle + " > ./image_tests/test.csv", shell=True)
     # Compare RLEs for saved masks
-    print(subprocess.Popen("diff -as ./data/test.csv ./data/test2.csv", shell=True,
+    print(subprocess.Popen("diff -as ./image_tests/source.csv ./image_tests/test.csv", shell=True,
                            stdout=subprocess.PIPE).stdout.readline().decode(), end='')
 
     print('Done!')
