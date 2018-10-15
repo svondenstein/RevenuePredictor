@@ -38,3 +38,20 @@ class AverageMeter:
     @property
     def val(self):
         return self.avg
+
+def get_max_filename(directory, prefix, extension):
+    i = 1
+    while os.path.exists(os.path.join(directory, '%s-%s%s' % (prefix, i, extension))):
+        i += 1
+    i -= 1
+    file_name = '%s%s-%s%s' % (directory, prefix, i, extension)
+
+    return file_name
+
+def get_max_unused_filename(directory, prefix, extension):
+    i = 1
+    while os.path.exists(os.path.join(directory, '%s-%s%s' % (prefix, i, extension))):
+        i += 1
+    file_name = '%s%s-%s%s' % (directory, prefix, i, extension)
+
+    return file_name

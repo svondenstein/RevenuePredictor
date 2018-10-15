@@ -3,24 +3,37 @@
 # 10/09/2018
 #
 import tensorflow as tf
+import numpy as np
 
 
-# TODO: Fix this, I think it's incorrect.
-def iou(prediction, mask, num_classes):
-    prediction = tf.cast(tf.expand_dims(tf.argmax(prediction, axis=3), [-1]), tf.float32)
-    inter = tf.reduce_sum(tf.multiply(prediction, mask))
-    union = tf.reduce_sum(tf.add(prediction, mask))
-    mean_iou = tf.reduce_mean(tf.divide(inter, tf.subtract(union, inter)))
+def iou(prediction, mask, batch_size):
+    metric = []
+    epsilon = 1e-15
+    predictions = tf.unstack(prediction, num=batch_size)
+    masks = tf.unstack(mask, num=batch_size)
+    for i in range(batch_size):
+        s = tf.cast(masks[i], tf.float32)
+        t = predictions[i]
+        if tf.reduce_sum(s) == 0 and tf.reduce_sum(t) == 0:
+            metric.append(1.0)
+        elif tf.reduce_sum(s) == 0 and tf.reduce_sum(t) != 0:
+            metric.append(0.0)
+        else:
+            intersection = tf.reduce_sum(tf.multiply(s, t))
+            union = tf.subtract(tf.add(tf.reduce_sum(s), tf.reduce_sum(t)), intersection)
+            iou = tf.divide(tf.add(intersection, epsilon), tf.add(union, epsilon))
+            thresholds = np.arange(0.5, 0.95, 0.05)
+            miou = []
+            for thresh in thresholds:
+                miou.append(tf.cond(iou > thresh, true_fn=lambda: 1, false_fn=lambda: 0))
+            metric.append(tf.reduce_mean(miou))
 
-    return mean_iou
+    return tf.reduce_mean(metric)
 
 
 def cross_entropy(prediction, mask, num_classes):
-    mask = tf.cast(mask, tf.int32)
-    prediction = tf.reshape(prediction, (-1, num_classes))
-    mask = tf.reshape(mask, [-1])
-    ce = tf.nn.sparse_softmax_cross_entropy_with_logits(
-        logits=prediction, labels=mask)
-    loss = tf.reduce_mean(ce)
+    mask = tf.one_hot(tf.squeeze(mask), num_classes, dtype=tf.float32)
+    loss = tf.nn.sigmoid_cross_entropy_with_logits(labels=mask, logits=prediction)
+    loss = tf.reduce_mean(loss)
 
     return loss

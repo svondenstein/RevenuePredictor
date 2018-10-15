@@ -25,11 +25,13 @@ class DataGenerator:
         self.test_size = int((len(self.image_paths)) * self.config.validation_split)
         self.train_size = int((len(self.image_paths)) * (1 - self.config.validation_split))
         self.infer_size = len(self.infer_paths)
+        self.debug_size = len(self.image_paths)
 
         # Calculate the max number of iterations based on batch size
         self.num_iterations_test = self.test_size // self.config.batch_size
         self.num_iterations_train = (self.train_size // self.config.batch_size) * 2 if self.config.augment else self.train_size // self.config.batch_size
         self.num_iterations_infer = self.infer_size // self.config.batch_size
+        self.num_iterations_debug = self.debug_size // self.config.batch_size
 
         # Create tensors containing image paths
         self.images = tf.constant(self.image_paths)
@@ -51,12 +53,21 @@ class DataGenerator:
         self.test_data = process(self.test_data, False, self.config, self.test_size)
         self.train_data = process(self.train_data, True, self.config, self.train_size)
         self.infer_data = process(self.infer_data, False, self.config, self.infer_size)
+        self.debug_data = process(self.dataset, False, self.config, self.debug_size)
 
         # Create iterator for train and infer datasets
-        self.iterator = tf.data.Iterator.from_structure(self.test_data.output_types, self.test_data.output_shapes)
-        self.training_init_op = self.iterator.make_initializer(self.train_data)
-        self.testing_init_op = self.iterator.make_initializer(self.test_data)
-        self.infer_init_op = self.iterator.make_initializer(self.infer_data)
+        self.train_iterator = tf.data.Iterator.from_structure(self.train_data.output_types,
+                                                                 self.train_data.output_shapes)
+        self.test_iterator = tf.data.Iterator.from_structure(self.test_data.output_types,
+                                                                 self.test_data.output_shapes)
+        self.infer_iterator = tf.data.Iterator.from_structure(self.infer_data.output_types,
+                                                                 self.infer_data.output_shapes)
+        self.debug_iterator = tf.data.Iterator.from_structure(self.debug_data.output_types,
+                                                                 self.debug_data.output_shapes)
+        self.training_init_op = self.train_iterator.make_initializer(self.train_data)
+        self.testing_init_op = self.test_iterator.make_initializer(self.test_data)
+        self.infer_init_op = self.infer_iterator.make_initializer(self.infer_data)
+        self.debug_init_op = self.debug_iterator.make_initializer(self.debug_data)
 
     # Initialize the iterater based on context
     def initialize(self, sess, training):
@@ -64,6 +75,8 @@ class DataGenerator:
             sess.run(self.training_init_op)
         elif training == 'test':
             sess.run(self.testing_init_op)
+        elif training == 'debug':
+            sess.run(self.debug_init_op)
         else:
             sess.run(self.infer_init_op)
 
