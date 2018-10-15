@@ -71,13 +71,12 @@ def prepare_submission(source_dir, output_path, sub_prefix):
     sub.columns = ['rle_mask']
 
     i = 1
-    submission_file = ('{0}-{1}.csv'.format(sub_prefix, i))
-    while os.path.exists(os.path.join(output_path, submission_file)):
+    while os.path.exists(os.path.join(output_path, '%s-%s.csv' % (sub_prefix, i))):
         i += 1
-        submission_file = ('{0}-{1}.csv'.format(sub_prefix, i))
-    submission_path = os.path.join(output_path, submission_file)
+    submission_path = '%s%s-%s.csv' % (output_path, sub_prefix, i)
     sub.to_csv(submission_path)
 
     print('Submission saved to ' + submission_path)
 
     return submission_path
+
