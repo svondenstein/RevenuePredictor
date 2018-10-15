@@ -40,4 +40,4 @@ if __name__ == '__main__':
         os.chdir(project_root)
     # Get args and pass them to compare_rle
     config = get_args()
-    compare_rle(config.prediction_path, './rle_tests/')
+    compare_rle(config.submission_path, './rle_tests/')
