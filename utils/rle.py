@@ -7,6 +7,7 @@ import numpy as np
 import os
 from keras.preprocessing import image
 from tqdm import tqdm
+from utils.utility import get_max_unused_filename
 
 
 def rle(img, order='F', format=True):
@@ -73,7 +74,8 @@ def prepare_submission(source_dir, output_path, sub_prefix):
     i = 1
     while os.path.exists(os.path.join(output_path, '%s-%s.csv' % (sub_prefix, i))):
         i += 1
-    submission_path = '%s%s-%s.csv' % (output_path, sub_prefix, i)
+    filename = get_max_unused_filename(output_path, sub_prefix, '.csv')
+    submission_path = '%s%s' % (output_path, filename)
     sub.to_csv(submission_path)
 
     print('Submission saved to ' + submission_path)
