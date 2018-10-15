@@ -12,7 +12,7 @@ def iou(prediction, mask, batch_size):
     predictions = tf.unstack(prediction, num=batch_size)
     masks = tf.unstack(mask, num=batch_size)
     for i in range(batch_size):
-        s = masks[i]
+        s = tf.cast(masks[i], tf.float32)
         t = predictions[i]
         if tf.reduce_sum(s) == 0 and tf.reduce_sum(t) == 0:
             metric.append(1.0)
@@ -32,11 +32,8 @@ def iou(prediction, mask, batch_size):
 
 
 def cross_entropy(prediction, mask, num_classes):
-    mask = tf.cast(mask, tf.int32)
-    prediction = tf.reshape(prediction, (-1, num_classes))
-    mask = tf.reshape(mask, [-1])
-    ce = tf.nn.sparse_softmax_cross_entropy_with_logits(
-        logits=prediction, labels=mask)
-    loss = tf.reduce_mean(ce)
+    mask = tf.one_hot(tf.squeeze(mask), num_classes, dtype=tf.float32)
+    loss = tf.nn.sigmoid_cross_entropy_with_logits(labels=mask, logits=prediction)
+    loss = tf.reduce_mean(loss)
 
     return loss
