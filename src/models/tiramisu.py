@@ -13,23 +13,6 @@ class Tiramisu:
         # Configuration parameters
         self.config = config
 
-        # Step and epoch tensors to use as counters
-        self.cur_epoch_tensor = None
-        self.increment_cur_epoch_tensor = None
-        self.global_step_tensor = None
-        self.increment_global_step_tensor = None
-        self.global_epoch_tensor = None
-        self.increment_global_epoch_tensor = None
-
-        # Initialize step counter
-        self.init_global_step()
-
-        # Initialize epoch counter
-        self.init_cur_epoch()
-
-        # Initialize global epoch counter
-        self.init_global_epoch()
-
         # # Initialize data loader
         # self.data_loader = data_loader
 
@@ -82,11 +65,11 @@ class Tiramisu:
             for i in range(pool):
                 # Dense block
                 for j in range(layers_per_block[i]):
-                    l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'down_dense_block_' + str(i * 10 + j))
+                    l = bn_relu_conv(self.stack, self.config.growth_k, self.config.conv.dropout, self.training, 'down_dense_block_' + str(i * 10 + j))
                     self.stack = tf.concat([self.stack, l], axis=3, name='down_concat_' + str(i * 10 + j))
                     filters += self.config.growth_k
                 skip_connection_list.append(self.stack)
-                self.stack = transition_down(self.stack, filters, self.config.dropout_percentage, self.training, 'trans_down_' + str(i))
+                self.stack = transition_down(self.stack, filters, self.config.conv.dropout, self.training, 'trans_down_' + str(i))
 
             skip_connection_list = skip_connection_list[::-1]
 
@@ -95,7 +78,7 @@ class Tiramisu:
 
             # Dense Block
             for j in range(layers_per_block[pool]):
-                l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'bottleneck_dense_' + str(j))
+                l = bn_relu_conv(self.stack, self.config.growth_k, self.config.conv.dropout, self.training, 'bottleneck_dense_' + str(j))
                 block_to_upsample.append(l)
                 self.stack = tf.concat([self.stack, l], axis=3, name='bottleneck_concat_' + str(j))
 
@@ -107,7 +90,7 @@ class Tiramisu:
                 # Dense block
                 block_to_upsample = []
                 for j in range(layers_per_block[pool + i + 1]):
-                    l = bn_relu_conv(self.stack, self.config.growth_k, self.config.dropout_percentage, self.training, 'up_dense_block_' + str(i + j * 10))
+                    l = bn_relu_conv(self.stack, self.config.growth_k, self.config.conv.dropout, self.training, 'up_dense_block_' + str(i + j * 10))
                     block_to_upsample.append(l)
                     self.stack = tf.concat([self.stack, l], axis=3, name='up_concat_' + str(i * 10 + j))
 
@@ -120,30 +103,14 @@ class Tiramisu:
         with tf.variable_scope('loss-acc'):
             self.loss = cross_entropy(self.out, self.mask, self.config.classes, name='loss')
             self.acc = iou(self.out, self.mask, self.config.classes, name='accuracy')
-
-        with tf.variable_scope('train_step'):
-            self.optimizer = tf.train.AdamOptimizer(self.config.learning_rate)
-            update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
-            with tf.control_dependencies(update_ops):
-                self.train_step = self.optimizer.minimize(self.loss, global_step=self.global_step_tensor, name='minimize')
-
-        tf.add_to_collection('train', self.train_step)
+        
         tf.add_to_collection('train', self.loss)
         tf.add_to_collection('train', self.acc)
 
-    # Initialize epoch counter
-    def init_cur_epoch(self):
-        with tf.variable_scope('cur_epoch'):
-            self.cur_epoch_tensor = tf.Variable(0, trainable=False, name='cur_epoch')
-            self.increment_cur_epoch_tensor = self.cur_epoch_tensor.assign(self.cur_epoch_tensor + 1)
+        with tf.variable_scope('train_step'):
+            self.optimizer = tf.train.AdamOptimizer(self.config.optimizer.learning_rate)
+            update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+            with tf.control_dependencies(update_ops):
+                self.train_step = self.optimizer.minimize(self.loss, name='minimize')
 
-    # Initialize step counter
-    def init_global_step(self):
-        with tf.variable_scope('global_step'):
-            self.global_step_tensor = tf.Variable(0, trainable=False, name='global_step')
-            self.increment_global_step_tensor = self.global_step_tensor.assign(self.global_step_tensor + 1)
-
-    # Initialize global epoch counter
-    def init_global_epoch(self):
-        self.global_epoch_tensor = tf.Variable(0, trainable=False, name='global_epoch')
-        self.increment_global_epoch_tensor = self.global_epoch_tensor.assign(self.global_epoch_tensor + 1)
+        tf.add_to_collection('train', self.train_step)

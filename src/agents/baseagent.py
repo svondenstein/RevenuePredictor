@@ -13,7 +13,7 @@ class BaseAgent:
         # Set up config and data
         self.config = config
         print('Loading data...')
-        self.data = DataGenerator(config)
+        self.data_loader = DataGenerator(config)
 
         # Initialize saver
         self.saver = None

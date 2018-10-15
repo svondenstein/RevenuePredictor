@@ -5,14 +5,20 @@
 import os
 
 # TODO: generalize to create from model param file
-# Ensure model parameters 
+# Ensure model parameters match internal param specification
+# Also formalizes what's passed into the actual model
 def generate_params(config):
     params = {
-        'learning_rate': config.learning_rate,
-        ''
-
-
+        'optimizer': {
+            'learning_rate': config.learning_rate,
+        },
+        'growth_k': config.growth_k,
+        'classes': config.classes,
+        'conv': {
+            'dropout': config.dropout_percentage,
+        },
     }
+    return params
 
 
 def create_dirs(dirs):

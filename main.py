@@ -6,7 +6,6 @@
 import os
 
 from src.models.tiramisu import Tiramisu
-from src.helpers.data_generator import DataGenerator
 from src.utils.parser import get_args
 from src.utils.utility import create_dirs
 from src.utils.rle import prepare_submission
@@ -24,6 +23,8 @@ def main():
 
     # Optimize the parameters
     if config.optimize:
+        print('Creating save directories...')
+        create_dirs([config.optimizer_path,config.model_path])
         print('Initializing optimizer...')
         optimizer = HyperEngineOptimizer(config)
         print('Optimizing...')
@@ -31,18 +32,18 @@ def main():
 
     # Set up test/train environment
     if config.infer or config.train:
-        # print('Building model...')
+        print('Building model...')
         model = Tiramisu(config)
         if config.train:
-            print('Creating model save directories...')
+            print('Creating save directories...')
             create_dirs([config.model_path])
             print('Initializing trainer...')
             trainer = Trainer(model, config)
-            print('Initializing model...')
-            trainer.load()
             print('Training model...')
             trainer.train()
         if config.infer:
+            print('Creating save directories...')
+            create_dirs([config.prediction_path])
             print('Initializing predicter...')
             predicter = Predicter(model, config)
             print('Making predictions...')
