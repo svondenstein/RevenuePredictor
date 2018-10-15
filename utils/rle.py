@@ -74,8 +74,7 @@ def prepare_submission(source_dir, output_path, sub_prefix):
     i = 1
     while os.path.exists(os.path.join(output_path, '%s-%s.csv' % (sub_prefix, i))):
         i += 1
-    filename = get_max_unused_filename(output_path, sub_prefix, '.csv')
-    submission_path = '%s%s' % (output_path, filename)
+    submission_path = get_max_unused_filename(output_path, sub_prefix, '.csv')
     sub.to_csv(submission_path)
 
     print('Submission saved to ' + submission_path)
