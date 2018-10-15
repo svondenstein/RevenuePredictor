@@ -9,11 +9,10 @@ import numpy as np
 def iou(prediction, mask, batch_size):
     metric = []
     epsilon = 1e-15
-    predictions = tf.unstack(prediction, num=batch_size)
-    masks = tf.unstack(mask, num=batch_size)
     for i in range(batch_size):
-        s = tf.cast(masks[i], tf.float32)
-        t = predictions[i]
+        s = mask[i, :, :, :]
+        t = prediction[i, :, :, :]
+        s = tf.cast(s, tf.float32)
         if tf.reduce_sum(s) == 0 and tf.reduce_sum(t) == 0:
             metric.append(1.0)
         elif tf.reduce_sum(s) == 0 and tf.reduce_sum(t) != 0:
