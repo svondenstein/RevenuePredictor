@@ -14,6 +14,7 @@ from tqdm import tqdm
 from utils.parser import get_args
 from utils.utility import create_dirs
 from utils.rle import prepare_submission
+from tests.rle_test import compare_rle
 from helpers.postprocess import data_crop
 from helpers.preprocess import tile_data
 from helpers.data_generator import DataGenerator
@@ -61,15 +62,8 @@ def test_io():
     # Close progress bar
     batches.close()
     # Compute RLEs for saved masks
-    rle = prepare_submission('./image_tests/detiled/masks/', config.submission_path, 'iotest')
-    print('Comparing RLE values...')
-    subprocess.Popen("sort ./data/train.csv > ./image_tests/source.csv", shell=True)
-    subprocess.Popen("sort " + str(rle) + " > ./image_tests/test.csv", shell=True)
-    # Compare RLEs for saved masks
-    diff = subprocess.Popen("diff -as ./image_tests/source.csv ./image_tests/test.csv", shell=True,
-                           stdout=subprocess.PIPE).stdout.readline().decode()
-    print('Files ./image_tests/source.csv and ./image_tests/test.csv '
-          'are not identical') if 'identical' not in diff else print(diff)
+    rle = prepare_submission('./image_tests/detiled/masks/', config.submission_path, 'test')
+    compare_rle('./image_tests/', './rle_tests/')
 
     print('Done!')
 

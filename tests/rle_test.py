@@ -13,12 +13,12 @@ from utils.utility import create_dirs
 from utils.utility import get_max_filename
 from utils.utility import get_max_unused_filename
 
-def compare_rle(source_path, test_path, output_path):
+def compare_rle(input_path, output_path):
     # Ensure submission_path is created
     create_dirs([output_path])
     # Get paths
-    test_rle = get_max_filename(source_path, 'test', '.csv')
-    test_path = os.path.join(test_path, test_rle)
+    test_rle = get_max_filename(input_path, 'test', '.csv')
+    test_path = os.path.join(input_path, test_rle)
     sort_rle = get_max_unused_filename(output_path, 'test', '.csv')
     sort_path = os.path.join(output_path, sort_rle)
 
@@ -27,10 +27,12 @@ def compare_rle(source_path, test_path, output_path):
     subprocess.Popen("sort ./data/train.csv > ./rle_tests/source.csv", shell=True)
     subprocess.Popen("sort " + str(test_path) + " > " + str(sort_path), shell=True)
     # Compare RLEs for saved masks
-    diff = subprocess.Popen("diff -as ./rle_tests/source.csv " + sort_path, shell=True,
+    diff = subprocess.Popen("diff -as ./rle_tests/source.csv " + str(sort_path), shell=True,
                             stdout=subprocess.PIPE).stdout.readline().decode()
-    print('Files ./image_tests/source.csv and ./image_tests/test.csv '
-          'are not identical') if 'identical' not in diff else print(diff)
+    print('Files ./image_tests/source.csv and ' + str(sort_path) +
+          ' are not identical') if 'identical' not in diff else print(diff)
+
+    return sort_path
 
 
 if __name__ == '__main__':
@@ -40,4 +42,4 @@ if __name__ == '__main__':
         os.chdir(project_root)
     # Get args and pass them to compare_rle
     config = get_args()
-    compare_rle('./image_tests/', config.submission_path, './rle_tests')
+    compare_rle(config.prediction_path, './rle_tests/')
