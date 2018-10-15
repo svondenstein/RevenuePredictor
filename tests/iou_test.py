@@ -11,12 +11,14 @@ import numpy as np
 import pandas as pd
 import math
 
+from tqdm import tqdm
 from utils.parser import get_args
 from utils.utility import get_max_filename
 
 def csv_to_image(csv):
     images = []
-    for i in range(len(csv)):
+    length = tqdm(range(len(csv)), total=len(csv), desc="Converting ")
+    for i in length:
         rle = csv.loc[i, 'rle_mask']
         rle = str(rle).split()
         image = rle_to_image(rle)
@@ -38,7 +40,8 @@ def rle_to_image(rle):
 
 def mean_iou(source, test):
     ious = []
-    for i in range(len(source)):
+    length = tqdm(range(len(source)), total=len(source), desc="Computing IoU ")
+    for i in length):
         iou = calculate_iou(source[i], test[i])
         ious.append(iou)
     return np.mean(ious)
