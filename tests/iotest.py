@@ -3,10 +3,12 @@
 # Stephen Vondenstein, Matthew Buckley
 # 10/12/2018
 #
-from helpers.data_generator import DataGenerator
 import cv2
 import os, subprocess
 import tensorflow as tf
+# Add parent to project root so we can import project files
+import sys
+sys.path.append('..')
 
 from tqdm import tqdm
 from utils.parser import get_args
@@ -14,8 +16,9 @@ from utils.utility import create_dirs
 from utils.rle import prepare_submission
 from helpers.postprocess import data_crop
 from helpers.preprocess import tile_data
+from helpers.data_generator import DataGenerator
 
-def main():
+def test_io():
     # Set Tensorflow verbosity
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '4'
 
@@ -72,4 +75,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # If executing from this folder, change the working directory to the parent to manipulate project files
+    if os.path.dirname(os.path.abspath(__file__)) == os.getcwd():
+         project_root = os.path.abspath('..')
+         os.chdir(project_root)
+    test_io()
