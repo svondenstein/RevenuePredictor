@@ -12,8 +12,8 @@ import pandas as pd
 import math
 
 from tqdm import tqdm
-from utils.parser import get_args
-from utils.utility import get_max_filename
+from src.utils.parser import get_args
+from src.utils.utility import get_max_filename
 
 def csv_to_image(csv):
     images = []

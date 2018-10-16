@@ -11,14 +11,14 @@ import sys
 sys.path.append('..')
 
 from tqdm import tqdm
-from utils.parser import get_args
-from utils.utility import create_dirs
-from utils.rle import prepare_submission
+from src.utils.parser import get_args
+from src.utils.utility import create_dirs
+from src.utils.rle import prepare_submission
 from tests.rle_test import compare_rle
 from tests.iou_test import compare_iou
-from helpers.postprocess import data_crop
-from helpers.preprocess import tile_data
-from helpers.data_generator import DataGenerator
+from src.helpers.postprocess import data_crop
+from src.helpers.preprocess import tile_data
+from src.helpers.data_generator import DataGenerator
 
 def test_io():
     # Set Tensorflow verbosity

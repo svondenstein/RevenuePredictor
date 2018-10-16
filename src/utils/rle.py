@@ -7,7 +7,7 @@ import numpy as np
 import os
 from keras.preprocessing import image
 from tqdm import tqdm
-from utils.utility import get_max_unused_filename
+from src.utils.utility import get_max_unused_filename
 
 
 def rle(img, order='F', format=True):

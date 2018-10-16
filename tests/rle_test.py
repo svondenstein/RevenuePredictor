@@ -8,10 +8,10 @@ import os, subprocess
 import sys
 sys.path.append('..')
 
-from utils.parser import get_args
-from utils.utility import create_dirs
-from utils.utility import get_max_filename
-from utils.utility import get_max_unused_filename
+from src.utils.parser import get_args
+from src.utils.utility import create_dirs
+from src.utils.utility import get_max_filename
+from src.utils.utility import get_max_unused_filename
 
 def compare_rle(input_path, output_path):
     # Ensure submission_path is created

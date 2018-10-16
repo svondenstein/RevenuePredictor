@@ -5,7 +5,7 @@
 from tqdm import tqdm
 import tensorflow as tf
 
-from utils.utility import AverageMeter
+from src.utils.utility import AverageMeter
 
 
 class Trainer:

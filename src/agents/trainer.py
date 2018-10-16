@@ -22,6 +22,7 @@ class Trainer(BaseAgent):
         # Initialize epoch counter
         self.init_epoch()
 
+        # Initialize variables
         self.image, self.mask, self.training, _ = tf.get_collection('inputs')
         self.train_op, self.loss_node, self.acc_node = tf.get_collection('train')
 
@@ -45,6 +46,7 @@ class Trainer(BaseAgent):
     def train_epoch(self, sess, epoch=None):
         # Initialize dataset
         self.data_loader.initialize(sess, 'train')
+        image, mask, _ = sess.run(self.data_loader.get_data())
 
         # Initialize tqdm
         tt = tqdm(range(self.data_loader.num_iterations_train), total=self.data_loader.num_iterations_train,
@@ -55,7 +57,9 @@ class Trainer(BaseAgent):
 
         # Iterate over batches
         for cur_it in tt:
-            loss, acc = self.train_step(sess)
+            _, loss, acc = sess.run([self.train_op, self.loss_node, self.acc_node], feed_dict={self.training: True,
+                                                                                               self.mask: mask,
+                                                                                               self.image: image})
             loss_per_epoch.update(loss)
             acc_per_epoch.update(acc)
 
@@ -67,14 +71,10 @@ class Trainer(BaseAgent):
 
         tt.close()
 
-
-    def train_step(self, sess):
-        _, loss, acc = sess.run([self.train_op, self.loss_node, self.acc_node], feed_dict={self.training: True})
-        return loss, acc
-
     def test(self, sess, epoch):
         # Initialize dataset
         self.data_loader.initialize(sess, 'test')
+        image, mask, _ = sess.run(self.data_loader.get_val())
 
         # Initialize tqdm
         tt = tqdm(range(self.data_loader.num_iterations_test), total=self.data_loader.num_iterations_test,
@@ -85,7 +85,9 @@ class Trainer(BaseAgent):
 
         # Iterate over batches
         for cur_it in tt:
-            loss, acc = sess.run([self.loss_node, self.acc_node], feed_dict={self.training: False})
+            loss, acc = sess.run([self.loss_node, self.acc_node], feed_dict={self.training: False,
+                                                                             self.mask: mask,
+                                                                             self.image: image})
             loss_per_epoch.update(loss)
             acc_per_epoch.update(acc)
 

@@ -57,20 +57,20 @@ class DataGenerator:
         self.debug_data = process(self.dataset, False, self.config, self.debug_size)
 
         # Create iterator for train and infer datasets
-        self.iterator = tf.data.Iterator.from_structure(self.test_data.output_types, self.test_data.output_shapes)
-        self.training_init_op = self.iterator.make_initializer(self.train_data)
-        self.testing_init_op = self.iterator.make_initializer(self.test_data)
-        self.infer_init_op = self.iterator.make_initializer(self.infer_data)
-        self.debug_init_op = self.iterator.make_initializer(self.debug_data)
+        # self.iterator = tf.data.Iterator.from_structure(self.test_data.output_types, self.test_data.output_shapes)
+        # self.training_init_op = self.iterator.make_initializer(self.train_data)
+        # self.testing_init_op = self.iterator.make_initializer(self.test_data)
+        # self.infer_init_op = self.iterator.make_initializer(self.infer_data)
+        # self.debug_init_op = self.iterator.make_initializer(self.debug_data)
         # For merge:
-        # self.data_iterator = tf.data.Iterator.from_structure(self.train_data.output_types,
-        #                                                       self.train_data.output_shapes)
-        # self.val_iterator = tf.data.Iterator.from_structure(self.test_data.output_types,
-        #                                                      self.test_data.output_shapes)
-        # self.training_init_op = self.data_iterator.make_initializer(self.train_data)
-        # self.testing_init_op = self.val_iterator.make_initializer(self.test_data)
-        # self.infer_init_op = self.data_iterator.make_initializer(self.infer_data)
-        # self.debug_init_op = self.data_iterator.make_initializer(self.debug_data)
+        self.data_iterator = tf.data.Iterator.from_structure(self.train_data.output_types,
+                                                              self.train_data.output_shapes)
+        self.val_iterator = tf.data.Iterator.from_structure(self.test_data.output_types,
+                                                             self.test_data.output_shapes)
+        self.training_init_op = self.data_iterator.make_initializer(self.train_data)
+        self.testing_init_op = self.val_iterator.make_initializer(self.test_data)
+        self.infer_init_op = self.data_iterator.make_initializer(self.infer_data)
+        self.debug_init_op = self.data_iterator.make_initializer(self.debug_data)
 
     # Initialize the iterater based on context
     def initialize(self, sess, training):
@@ -84,16 +84,16 @@ class DataGenerator:
             sess.run(self.infer_init_op)
 
     # Return next iterator item
-    def get_input(self):
-        return self.iterator.get_next()
+    # def get_input(self):
+    #     return self.iterator.get_next()
 
     # For merge:
-    # def get_data(self):
-    #     return self.data_iterator.get_next()
-    #
-    # def get_val(self):
-    #     return self.val_iterator.get_next()
-    #
+    def get_data(self):
+        return self.data_iterator.get_next()
+
+    def get_val(self):
+        return self.val_iterator.get_next()
+
 
     # Return list of images, masks, and names for a given data directory
     @staticmethod

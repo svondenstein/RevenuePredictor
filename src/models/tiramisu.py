@@ -41,8 +41,8 @@ class Tiramisu:
         with tf.variable_scope('inputs'):
             # self.image, self.mask, self.image_name = self.data_loader.get_input()
             self.training = tf.placeholder(tf.bool, name='Training_flag')
-            self.image = tf.placeholder(tf.float32, shape=[None, 128, 128, 1],name='input')
-            self.mask = tf.placeholder(tf.int32, shape=[None, 128, 128], name='label') #Should this be boolean?
+            self.image = tf.placeholder(tf.float32, shape=[None, 101, 101, 1],name='input')
+            self.mask = tf.placeholder(tf.int32, shape=[None, 101, 101, 1], name='label') #Should this be boolean?
         tf.add_to_collection('inputs', self.image)
         tf.add_to_collection('inputs', self.mask)
         tf.add_to_collection('inputs', self.training)
@@ -66,11 +66,11 @@ class Tiramisu:
             for i in range(pool):
                 # Dense block
                 for j in range(layers_per_block[i]):
-                    l = bn_relu_conv(self.stack, self.config.growth_k, self.config.conv.dropout, self.training, 'down_dense_block_' + str(i * 10 + j))
+                    l = bn_relu_conv(self.stack, self.config['growth_k'], self.config['conv']['dropout'], self.training, 'down_dense_block_' + str(i * 10 + j))
                     self.stack = tf.concat([self.stack, l], axis=3, name='down_concat_' + str(i * 10 + j))
-                    filters += self.config.growth_k
+                    filters += self.config['growth_k']
                 skip_connection_list.append(self.stack)
-                self.stack = transition_down(self.stack, filters, self.config.conv.dropout, self.training, 'trans_down_' + str(i))
+                self.stack = transition_down(self.stack, filters, self.config['conv']['dropout'], self.training, 'trans_down_' + str(i))
 
             skip_connection_list = skip_connection_list[::-1]
 
@@ -79,40 +79,39 @@ class Tiramisu:
 
             # Dense Block
             for j in range(layers_per_block[pool]):
-                l = bn_relu_conv(self.stack, self.config.growth_k, self.config.conv.dropout, self.training, 'bottleneck_dense_' + str(j))
+                l = bn_relu_conv(self.stack, self.config['growth_k'], self.config['conv']['dropout'], self.training, 'bottleneck_dense_' + str(j))
                 block_to_upsample.append(l)
                 self.stack = tf.concat([self.stack, l], axis=3, name='bottleneck_concat_' + str(j))
 
             # Upsampling path
             for i in range(pool):
-                filters_keep = self.config.growth_k * layers_per_block[pool + i]
+                filters_keep = self.config['growth_k'] * layers_per_block[pool + i]
                 self.stack = transition_up(skip_connection_list[i], block_to_upsample, filters_keep, 'trans_up_' + str(i))
 
                 # Dense block
                 block_to_upsample = []
                 for j in range(layers_per_block[pool + i + 1]):
-                    l = bn_relu_conv(self.stack, self.config.growth_k, self.config.conv.dropout, self.training, 'up_dense_block_' + str(i + j * 10))
+                    l = bn_relu_conv(self.stack, self.config['growth_k'], self.config['conv']['dropout'], self.training, 'up_dense_block_' + str(i + j * 10))
                     block_to_upsample.append(l)
                     self.stack = tf.concat([self.stack, l], axis=3, name='up_concat_' + str(i * 10 + j))
 
             # Softmax
             with tf.variable_scope('out'):
-                self.out = softmax(self.stack, self.config.classes, 'softmax')
+                self.out = softmax(self.stack, self.config['classes'], 'softmax')
                 self.out = tile_crop(self.out)
                 tf.add_to_collection('out', self.out)
 
         # Operators for the training process
         with tf.variable_scope('loss-acc'):
-            self.loss = cross_entropy(self.out, self.mask, self.config.classes, name='loss')
-            self.acc = iou(self.out, self.mask, self.config.batch_size, name='accuracy')
-
-        tf.add_to_collection('train', self.loss)
-        tf.add_to_collection('train', self.acc)
+            self.loss = cross_entropy(self.out, self.mask, self.config['classes'], name='loss')
+            self.acc = iou(self.out, self.mask, name='accuracy')
 
         with tf.variable_scope('train_step'):
-            self.optimizer = tf.train.AdamOptimizer(self.config.optimizer.learning_rate)
+            self.optimizer = tf.train.AdamOptimizer(self.config['optimizer']['learning_rate'])
             update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
             with tf.control_dependencies(update_ops):
                 self.train_step = self.optimizer.minimize(self.loss, name='minimize')
 
         tf.add_to_collection('train', self.train_step)
+        tf.add_to_collection('train', self.loss)
+        tf.add_to_collection('train', self.acc)
