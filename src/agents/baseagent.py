@@ -22,7 +22,7 @@ class BaseAgent:
     # Save checkpoint
     def save(self, sess):
         print('Saving model to {}...'.format(self.config.model_path))
-        self.saver.save(sess, self.config.model_path + 'epoch', self.global_epoch_tensor)
+        self.saver.save(sess, self.config.model_path + 'epoch', self.epoch_tensor)
         print("Model saved.")
 
     # Load checkpoint
