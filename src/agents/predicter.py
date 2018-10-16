@@ -32,11 +32,11 @@ class Predicter(BaseAgent):
             # Initialize dataset
             self.data_loader.initialize(sess, 'infer')
             image, _, name = sess.run(self.data_loader.get_data())
-            
+
             # Iterate over batches
             for cur_it in tt:
-                image = sess.run([self.image], feed_dict={self.training: False,
+                output_image = sess.run([self.image], feed_dict={self.training: False,
                                                           self.image: image})
-                process(image, name, self.config)
+                process(output_image, name, self.config)
 
         tt.close()
