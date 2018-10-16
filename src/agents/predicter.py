@@ -16,7 +16,7 @@ class Predicter(BaseAgent):
         self.model = model
 
         # Load the model
-        _, _, self.training, self.image_name = tf.get_collection('inputs')
+        self.image, _, self.training, _ = tf.get_collection('inputs')
         self.image = tf.get_collection('out')
 
     def predict(self):
@@ -27,14 +27,16 @@ class Predicter(BaseAgent):
 
             # Initialize all variables of the graph
             self.init = tf.global_variables_initializer(), tf.local_variables_initializer()
-            self.run(self.init)
+            sess.run(self.init)
 
             # Initialize dataset
             self.data_loader.initialize(sess, 'infer')
+            image, _, name = sess.run(self.data_loader.get_data())
             
             # Iterate over batches
             for cur_it in tt:
-                image, image_name = sess.run([self.image, self.image_name], feed_dict={self.training: False})
-                process(image, image_name, self.config)
+                image = sess.run([self.image], feed_dict={self.training: False,
+                                                          self.image: image})
+                process(image, name, self.config)
 
         tt.close()
