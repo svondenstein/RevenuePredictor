@@ -1,18 +1,17 @@
+#!/usr/bin/env python3
 #
 # Stephen Vondenstein, Matthew Buckley
 # 10/08/2018
 #
 import os
-import tensorflow as tf
 
-from models.tiramisu import Tiramisu
-from helpers.data_generator import DataGenerator
-from utils.parser import get_args
-from utils.utility import create_dirs
-from utils.rle import prepare_submission
-from models.trainer import Trainer
-from models.predicter import Predicter
-from utils.logger import Logger
+from src.models.tiramisu import Tiramisu
+from src.utils.parser import get_args
+from src.utils.utility import create_dirs, generate_params
+from src.utils.rle import prepare_submission
+from src.agents.trainer import Trainer
+from src.agents.predicter import Predicter
+from src.agents.optimizers.tiramisu_hyper import HyperEngineOptimizer
 
 
 def main():
@@ -22,34 +21,32 @@ def main():
     # Get configuration
     config = get_args()
 
+    # Optimize the parameters
+    if config.optimize:
+        print('Creating save directories...')
+        create_dirs([config.optimizer_path,config.model_path])
+        print('Initializing optimizer...')
+        # optimizer = HyperEngineOptimizer(config)
+        print('Optimizing...')
+        # optimizer.optimize()
+
     # Set up test/train environment
     if config.infer or config.train:
-        # Set up common environment
-        sess = tf.Session()
-        print('Loading data...')
-        data = DataGenerator(config)
         print('Building model...')
-        model = Tiramisu(data, config)
+        params = generate_params(config)
+        model = Tiramisu(params)
         if config.train:
-            print('Creating model save directories...')
-            create_dirs([config.model_path, config.log_path])
-            print('Initializing TensorBoard...')
-            logger = Logger(sess, summary_dir=config.log_path,
-                            scalar_tags=['train/loss_per_epoch', 'train/acc_per_epoch',
-                                         'test/loss_per_epoch', 'test/acc_per_epoch'])
+            print('Creating save directories...')
+            create_dirs([config.model_path])
             print('Initializing trainer...')
-            trainer = Trainer(sess, model, data, config, logger)
-            print('Initializing model...')
-            model.load(sess)
+            trainer = Trainer(model, config)
             print('Training model...')
             trainer.train()
         if config.infer:
-            print('Creating prediction save directory...')
+            print('Creating save directories...')
             create_dirs([config.prediction_path])
             print('Initializing predicter...')
-            predicter = Predicter(sess, model, data, config)
-            print('Initializing model...')
-            model.load(sess)
+            predicter = Predicter(model, config)
             print('Making predictions...')
             predicter.predict()
 

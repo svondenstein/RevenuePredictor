@@ -84,5 +84,13 @@ def get_args():
                         help='Validation split for training',
                         type=float)
 
+    parser.add_argument('-o', '--optimize',
+                        action='store_true',
+                        help='Perform model parameter optimization')
+
+    parser.add_argument('-op', '--optimizer_path',
+                        default='./optimizer/',
+                        help='Directory to save optimizer data')
+
     FLAGS = parser.parse_args()
     return FLAGS
