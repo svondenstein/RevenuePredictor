@@ -10,9 +10,11 @@ import math
 
 
 def process(image, name, config):
-    for i in range(image[0].shape[0]):
-        img = np.reshape(np.argmax(image[0], axis=3), (image[0].shape[0], 101, 101))
-        cv2.imwrite(os.path.join(config.prediction_path, name[i].decode('utf-8')), 255 * img[i, :, :])
+    #print(name.shape)
+    for i in range(len(image[0])):
+        img = np.argmax(image[0][i], axis=2)
+        print(name[i])
+        cv2.imwrite(os.path.join(config.prediction_path, name[i].decode('utf-8')), 255 * img)
 
 
 # de-tile the image

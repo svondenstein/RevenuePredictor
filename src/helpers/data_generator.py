@@ -44,7 +44,6 @@ class DataGenerator:
         self.infer_names = tf.constant(self.infer_name_list)
         self.infer_depths = tf.constant(self.infer_depths_list)
 
-
         # Create train and infer datasets from the individual tensors
         self.dataset = tf.data.Dataset.from_tensor_slices((self.images, self.masks, self.names, self.depths))
         self.dataset = self.dataset.shuffle(len(self.image_paths))
@@ -78,17 +77,12 @@ class DataGenerator:
         else:
             sess.run(self.infer_init_op)
 
-    # Return next iterator item
-    # def get_input(self):
-    #     return self.iterator.get_next()
-
     # For merge:
     def get_data(self):
         return self.data_iterator.get_next()
 
     def get_val(self):
         return self.val_iterator.get_next()
-
 
     # Return list of images, masks, and names for a given data directory
     @staticmethod

@@ -55,7 +55,6 @@ def augment_data(dataset, config):
     # return data.concatenate(stretch)
     return dataset
 
-
 # Tiles the image with flipped tiles and then crops
 def tile_image(image):
     batched = (len(image.shape) == 4) #If already batched

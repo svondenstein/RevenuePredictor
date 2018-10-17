@@ -5,25 +5,23 @@
 from tqdm import tqdm
 import tensorflow as tf
 from src.agents.baseagent import BaseAgent
-
 from src.helpers.postprocess import process
 
 class Predicter(BaseAgent):
-    def __init__(self, model, config):
-        BaseAgent.__init__(self, config)
+    def __init__(self, config):
+        super(Predicter, self).__init__(config)
 
-        # Initialize local variables
-        self.model = model
-
-        # Load the model
+        # Initialize variables
         self.image, _, self.training = tf.get_collection('inputs')
-        self.image = tf.get_collection('out')
+        self.out = tf.get_collection('out')
 
     def predict(self):
-    # Initialize tqdm
-        tt = tqdm(range(self.data_loader.num_iterations_infer), total=self.data_loader.num_iterations_infer, desc="Predicting ")
+
         with tf.Session() as sess:
             self.load(sess)
+
+            # Initialize tqdm
+            tt = tqdm(range(self.data_loader.num_iterations_infer), total=self.data_loader.num_iterations_infer, desc="Predicting ")
 
             # Initialize all variables of the graph
             self.init = tf.global_variables_initializer(), tf.local_variables_initializer()
@@ -31,12 +29,14 @@ class Predicter(BaseAgent):
 
             # Initialize dataset
             self.data_loader.initialize(sess, 'infer')
-            image, _, name, _ = sess.run(self.data_loader.get_data())
+            next_item = self.data_loader.get_data()
 
             # Iterate over batches
             for cur_it in tt:
-                output_image = sess.run([self.image], feed_dict={self.training: False,
-                                                          self.image: image})
+                image, _, name, _ = sess.run(next_item)
+                output_image = sess.run(self.out,
+                                            feed_dict={self.training: False,
+                                                        self.image: image})
                 process(output_image, name, self.config)
 
         tt.close()

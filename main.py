@@ -39,15 +39,14 @@ def main():
             print('Creating save directories...')
             create_dirs([config.model_path])
             print('Initializing trainer...')
-            trainer = Trainer(model, config)
+            trainer = Trainer(config)
             print('Training model...')
             trainer.train()
         if config.infer:
             print('Creating save directories...')
             create_dirs([config.prediction_path])
             print('Initializing predicter...')
-            predicter = Predicter(model, config)
-            print('Making predictions...')
+            predicter = Predicter(config)
             predicter.predict()
 
     # Prepare submission
