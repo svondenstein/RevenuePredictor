@@ -41,12 +41,12 @@ class Tiramisu:
         with tf.variable_scope('inputs'):
             # self.image, self.mask, self.image_name = self.data_loader.get_input()
             self.training = tf.placeholder(tf.bool, name='Training_flag')
-            self.image = tf.placeholder(tf.float32, shape=[None, 101, 101, 1],name='input')
+            self.image = tf.placeholder(tf.float32, shape=[None, 101, 101, 2],name='input')
             self.mask = tf.placeholder(tf.int32, shape=[None, 101, 101, 1], name='label') #Should this be boolean?
         tf.add_to_collection('inputs', self.image)
         tf.add_to_collection('inputs', self.mask)
         tf.add_to_collection('inputs', self.training)
-        tf.add_to_collection('inputs', self.image_name)
+        # tf.add_to_collection('inputs', self.image_name)
 
         # Network architecture
         with tf.variable_scope('network'):

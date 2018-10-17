@@ -23,7 +23,7 @@ class Trainer(BaseAgent):
         self.init_epoch()
 
         # Initialize variables
-        self.image, self.mask, self.training, _ = tf.get_collection('inputs')
+        self.image, self.mask, self.training = tf.get_collection('inputs')
         self.train_op, self.loss_node, self.acc_node = tf.get_collection('train')
 
     # Training loop
@@ -46,7 +46,7 @@ class Trainer(BaseAgent):
     def train_epoch(self, sess, epoch=None):
         # Initialize dataset
         self.data_loader.initialize(sess, 'train')
-        image, mask, _ = sess.run(self.data_loader.get_data())
+        image, mask, _, _ = sess.run(self.data_loader.get_data())
 
         # Initialize tqdm
         tt = tqdm(range(self.data_loader.num_iterations_train), total=self.data_loader.num_iterations_train,

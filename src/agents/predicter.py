@@ -16,7 +16,7 @@ class Predicter(BaseAgent):
         self.model = model
 
         # Load the model
-        self.image, _, self.training, _ = tf.get_collection('inputs')
+        self.image, _, self.training = tf.get_collection('inputs')
         self.image = tf.get_collection('out')
 
     def predict(self):
@@ -31,7 +31,7 @@ class Predicter(BaseAgent):
 
             # Initialize dataset
             self.data_loader.initialize(sess, 'infer')
-            image, _, name = sess.run(self.data_loader.get_data())
+            image, _, name, _ = sess.run(self.data_loader.get_data())
 
             # Iterate over batches
             for cur_it in tt:
