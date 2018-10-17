@@ -74,7 +74,7 @@ class Trainer(BaseAgent):
     def test(self, sess, epoch):
         # Initialize dataset
         self.data_loader.initialize(sess, 'test')
-        image, mask, _ = sess.run(self.data_loader.get_val())
+        image, mask, _, _ = sess.run(self.data_loader.get_val())
 
         # Initialize tqdm
         tt = tqdm(range(self.data_loader.num_iterations_test), total=self.data_loader.num_iterations_test,
