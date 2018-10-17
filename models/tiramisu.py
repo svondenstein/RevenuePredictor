@@ -128,6 +128,7 @@ class Tiramisu:
             self.acc = iou(self.out, self.mask, self.config.batch_size)
 
         with tf.variable_scope('train_step'):
+            print("Learning rate read as: ",self.config.learning_rate)
             self.optimizer = tf.train.AdamOptimizer(self.config.learning_rate)
             update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
             with tf.control_dependencies(update_ops):

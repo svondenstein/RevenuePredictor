@@ -50,7 +50,7 @@ def get_args():
                         help='Directory to save tensorboard logs')
 
     parser.add_argument('-lr', '--learning_rate',
-                        default=1e-3,
+                        default=1e-5,
                         help='Learning rate for optimizer',
                         type=float)
 
