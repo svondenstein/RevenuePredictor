@@ -46,7 +46,7 @@ class Trainer(BaseAgent):
     def train_epoch(self, sess, epoch=None):
         # Initialize dataset
         self.data_loader.initialize(sess, 'train')
-        image, mask, _, _ = sess.run(self.data_loader.get_data())
+        next_item = self.data_loader.get_data()
 
         # Initialize tqdm
         tt = tqdm(range(self.data_loader.num_iterations_train), total=self.data_loader.num_iterations_train,
@@ -57,6 +57,7 @@ class Trainer(BaseAgent):
 
         # Iterate over batches
         for cur_it in tt:
+            image, mask, _, _ = sess.run(self.data_loader.get_data())
             _, loss, acc = sess.run([self.train_op, self.loss_node, self.acc_node], feed_dict={self.training: True,
                                                                                                self.mask: mask,
                                                                                                self.image: image})
@@ -74,7 +75,7 @@ class Trainer(BaseAgent):
     def test(self, sess, epoch):
         # Initialize dataset
         self.data_loader.initialize(sess, 'test')
-        image, mask, _, _ = sess.run(self.data_loader.get_val())
+        next_item = self.data_loader.get_val()
 
         # Initialize tqdm
         tt = tqdm(range(self.data_loader.num_iterations_test), total=self.data_loader.num_iterations_test,
@@ -85,6 +86,7 @@ class Trainer(BaseAgent):
 
         # Iterate over batches
         for cur_it in tt:
+            image, mask, _, _ = sess.run(next_item)
             loss, acc = sess.run([self.loss_node, self.acc_node], feed_dict={self.training: False,
                                                                              self.mask: mask,
                                                                              self.image: image})
