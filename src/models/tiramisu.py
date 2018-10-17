@@ -107,7 +107,12 @@ class Tiramisu:
             self.acc = iou(self.out, self.mask, name='accuracy')
 
         with tf.variable_scope('train_step'):
-            self.optimizer = tf.train.AdamOptimizer(self.config['optimizer']['learning_rate'])
+
+            # testing learning rate decay ~according to paper
+            global_step = tf.Variable(0, trainable=False)
+            learning_rate = tf.train.exponential_decay(self.config['optimizer']['learning_rate'], global_step, 500, 0.95, staircase=True)
+
+            self.optimizer = tf.train.AdamOptimizer(learning_rate)
             update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
             with tf.control_dependencies(update_ops):
                 self.train_step = self.optimizer.minimize(self.loss, name='minimize')
