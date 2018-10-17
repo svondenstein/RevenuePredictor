@@ -9,11 +9,8 @@ from src.agents.baseagent import BaseAgent
 from src.utils.utility import AverageMeter
 
 class Trainer(BaseAgent):
-    def __init__(self, model, config):
-        BaseAgent.__init__(self, config)
-
-        # Initialize local variables
-        self.model = model
+    def __init__(self, config):
+        super(Trainer, self).__init__(config)
 
         # Step and epoch tensors to use as counters
         self.epoch_tensor = None
