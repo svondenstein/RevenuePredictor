@@ -54,10 +54,10 @@ class Trainer(BaseAgent):
 
         loss_per_epoch = AverageMeter()
         acc_per_epoch = AverageMeter()
-
+        next_item = self.data_loader.get_data()
         # Iterate over batches
         for cur_it in tt:
-            image, mask, _, _ = sess.run(self.data_loader.get_data())
+            image, mask, _, _ = sess.run(next_item)
             _, loss, acc = sess.run([self.train_op, self.loss_node, self.acc_node], feed_dict={self.training: True,
                                                                                                self.mask: mask,
                                                                                                self.image: image})
