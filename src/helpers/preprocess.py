@@ -74,10 +74,10 @@ def tile_data(image, mask, name):
     return image_out, mask_out, name
 
 
-def flip_data(image, mask, name):
+def flip_data(image, mask, name, depth):
     image = tf.image.flip_left_right(image)
     mask = tf.image.flip_left_right(mask)
-    return image, mask, name
+    return image, mask, name, depth
 
 def stretch_data(image, mask, name):
     factor = random.uniform(0, 1)
