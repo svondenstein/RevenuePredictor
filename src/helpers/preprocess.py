@@ -9,7 +9,7 @@ import random
 def process(dataset, training, config, len):
     dataset = dataset.map(parse_data, num_parallel_calls=config.batch_size)
     dataset = dataset.map(normalize_data, num_parallel_calls=config.batch_size)
-    dataset = dataset.map(combine_depth_data, num_parallel_calls=config.batch_size)
+    #dataset = dataset.map(combine_depth_data, num_parallel_calls=config.batch_size)
     if config.augment and training:
         dataset = dataset.concatenate(augment_data(dataset, config))
         dataset = dataset.shuffle(len * 2)

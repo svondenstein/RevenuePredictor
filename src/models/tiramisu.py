@@ -39,7 +39,7 @@ class Tiramisu:
         # Inputs to the network
         with tf.variable_scope('inputs'):
             self.training = tf.placeholder(tf.bool, name='Training_flag')
-            self.image = tf.placeholder(tf.float32, shape=[None, 101, 101, 2],name='input')
+            self.image = tf.placeholder(tf.float32, shape=[None, 101, 101, 1],name='input')
             self.mask = tf.placeholder(tf.int32, shape=[None, 101, 101, 1], name='label')
         tf.add_to_collection('inputs', self.image)
         tf.add_to_collection('inputs', self.mask)
