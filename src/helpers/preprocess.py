@@ -44,7 +44,8 @@ def normalize_data(image, mask, name, depth):
     return image, mask, name, depth
 
 def combine_depth_data(image, mask, name, depth):
-    # depth_layer = tf.fill(tf.shape(image),depth)
+    depth_layer = tf.fill(tf.shape(image),depth)
+    tf.print(depth_layer)
     # image = tf.concat([image,depth_layer],-1)
     return image, mask, name, depth
 
