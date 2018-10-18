@@ -77,6 +77,13 @@ class Tiramisu:
             # Bottleneck
             block_to_upsample = []
 
+            depth_shape = tf.shape(self.stack)[:-1]
+            depth_shape = tf.concat([depth_shape,tf.expand_dims(tf.constant(1),0)],0)
+            self.depth = tf.reshape(self.depth,[-1,1,1,1])
+            depth_tensor = tf.broadcast_to(self.depth,depth_shape)
+
+            self.stack = tf.concat([self.stack,depth_tensor], -1)
+
             # Dense Block
             for j in range(layers_per_block[pool]):
                 l = bn_relu_conv(self.stack, self.config['growth_k'], self.config['conv']['dropout'], self.training, 'bottleneck_dense_' + str(j))
