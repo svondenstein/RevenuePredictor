@@ -40,7 +40,6 @@ def main():
             create_dirs([config.model_path])
             print('Initializing trainer...')
             trainer = Trainer(config)
-            print('Training model...')
             trainer.train()
         if config.infer:
             print('Creating save directories...')
