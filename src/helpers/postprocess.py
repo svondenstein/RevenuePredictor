@@ -13,7 +13,6 @@ def process(image, name, config):
     #print(name.shape)
     for i in range(len(image[0])):
         img = np.argmax(image[0][i], axis=2)
-        print(name[i])
         cv2.imwrite(os.path.join(config.prediction_path, name[i].decode('utf-8')), 255 * img)
 
 
