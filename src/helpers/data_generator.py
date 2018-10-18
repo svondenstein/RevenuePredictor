@@ -14,7 +14,7 @@ class DataGenerator:
         self.config = config
 
         # Get paths for data directories
-        self.image_path = os.path.join(self.config.data_path,'train/images/')
+        self.image_path = os.path.join(self.config.data_path,'train/images')
         self.mask_path = os.path.join(self.config.data_path,'train/masks')
         self.infer_path = os.path.join(self.config.data_path,'test/images')
         self.depth_file = os.path.join(self.config.data_path,'depths.csv')

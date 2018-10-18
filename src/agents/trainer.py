@@ -27,12 +27,12 @@ class Trainer(BaseAgent):
     def train(self):
         with tf.Session() as sess:
 
-            # Load the model
-            self.load(sess)
-
             # Initialize all variables of the graph
             self.init = tf.global_variables_initializer(), tf.local_variables_initializer()
             sess.run(self.init)
+
+            # Load the model
+            self.load(sess)
 
             for cur_epoch in range(self.epoch_tensor.eval(sess), self.config.epochs + 1, 1):
                 self.train_epoch(sess,cur_epoch)

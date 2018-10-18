@@ -18,14 +18,14 @@ class Predicter(BaseAgent):
     def predict(self):
 
         with tf.Session() as sess:
+            # Initialize all variables of the graph
+            self.init = tf.global_variables_initializer(), tf.local_variables_initializer()
+            sess.run(self.init)
+
             self.load(sess)
 
             # Initialize tqdm
             tt = tqdm(range(self.data_loader.num_iterations_infer), total=self.data_loader.num_iterations_infer, desc="Predicting ")
-
-            # Initialize all variables of the graph
-            self.init = tf.global_variables_initializer(), tf.local_variables_initializer()
-            sess.run(self.init)
 
             # Initialize dataset
             self.data_loader.initialize(sess, 'infer')
