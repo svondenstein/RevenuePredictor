@@ -10,21 +10,27 @@ sys.path.append('..')
 import numpy as np
 import pandas as pd
 import math
+import cv2
 
 from tqdm import tqdm
 from src.utils.parser import get_args
 from src.utils.utility import get_max_filename
+from src.utils.utility import create_dirs
 
 def csv_to_image(csv):
     images = []
+    names = []
     length = tqdm(range(len(csv)), total=len(csv), desc="Converting ")
     for i in length:
+        name = csv.loc[i, 'id']
         rle = csv.loc[i, 'rle_mask']
         rle = str(rle).split()
         image = rle_to_image(rle)
         images.append(image)
+        names.append(name)
+    length.close()
 
-    return images
+    return images, names
 
 def rle_to_image(rle):
     placeholder = np.zeros(101 * 101)
@@ -82,21 +88,31 @@ def calculate_iou(source, test):
         iou = math.ceil((max(iou - 0.5, 0))/0.05)/10
     return iou
 
+def save_images(images, names, path):
+    length = tqdm(range(len(images)), total=len(images), desc="Saving ")
+    for i in length:
+        cv2.imwrite(os.path.join(path, names[i] + '.png'), images[i])
+    length.close()
 
-def compare_iou(input_path):
-    # Get path
+
+def compare_iou(config):
+    input_path = config.submission_path
+    # Load test images
     test_path = get_max_filename(input_path, 'test', '.csv')
-    # Load CSVs
-    source = pd.read_csv('./data/train.csv')
     test = pd.read_csv(test_path)
-    # Convert RLE to image so we can compute IoU in numpy
-    source_images = csv_to_image(source)
-    test_images = csv_to_image(test)
-    # Compute IoU values
-    iou_a = mean_iou(source_images, test_images)
-    iou_b = vector_iou(source_images, test_images)
-    print('Mean IoU A: ' + str(iou_a))
-    print('Mean IoU B: ' + str(iou_b))
+    test_images, test_image_names = csv_to_image(test)
+    if config.compute_iou:
+        # Load source images
+        source = pd.read_csv('./data/train.csv')
+        source_images, _ = csv_to_image(source)
+        # Compute IoU values
+        iou_a = mean_iou(source_images, test_images)
+        iou_b = vector_iou(source_images, test_images)
+        print('Mean IoU A: ' + str(iou_a))
+        print('Mean IoU B: ' + str(iou_b))
+    if config.rle_to_image:
+        create_dirs(['./converted_images/'])
+        save_images(test_images, test_image_names, './converted_images/')
 
 
 if __name__ == '__main__':
@@ -106,4 +122,4 @@ if __name__ == '__main__':
         os.chdir(project_root)
     # Get args and pass them to compare_rle
     config = get_args()
-    compare_iou(config.submission_path)
+    compare_iou(config)

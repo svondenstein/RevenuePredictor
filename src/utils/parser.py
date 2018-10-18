@@ -22,6 +22,10 @@ def get_args():
                         help='Number of classes',
                         type=int)
 
+    parser.add_argument('-ci', '--compute_iou',
+                        action='store_true',
+                        help='Compute IoU with train.csv')
+
     parser.add_argument('-d', '--data_path',
                         default='./data/',
                         help='Path to data directory')
@@ -91,6 +95,10 @@ def get_args():
                         default=0.25,
                         help='Validation split for training',
                         type=float)
+
+    parser.add_argument('-x', '--rle_to_image',
+                        action='store_true',
+                        help='Save images from RLE in .csv file')
 
     FLAGS = parser.parse_args()
     return FLAGS
