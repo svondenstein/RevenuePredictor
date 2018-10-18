@@ -12,7 +12,7 @@ class Predicter(BaseAgent):
         super(Predicter, self).__init__(config)
 
         # Initialize variables
-        self.image, _, self.training = tf.get_collection('inputs')
+        self.image, _, self.training, self.depth = tf.get_collection('inputs')
         self.out = tf.get_collection('out')
 
     def predict(self):
@@ -33,10 +33,11 @@ class Predicter(BaseAgent):
 
             # Iterate over batches
             for cur_it in tt:
-                image, _, name, _ = sess.run(next_item)
+                image, _, name, depth = sess.run(next_item)
                 output_image = sess.run(self.out,
                                             feed_dict={self.training: False,
-                                                        self.image: image})
+                                                        self.image: image,
+                                                        self.depth: depth})
                 process(output_image, name, self.config)
 
         tt.close()

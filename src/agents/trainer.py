@@ -20,7 +20,7 @@ class Trainer(BaseAgent):
         self.init_epoch()
 
         # Initialize variables
-        self.image, self.mask, self.training = tf.get_collection('inputs')
+        self.image, self.mask, self.training, self.depth = tf.get_collection('inputs')
         self.train_op, self.loss_node, self.acc_node = tf.get_collection('train')
 
     # Training loop
@@ -54,10 +54,11 @@ class Trainer(BaseAgent):
         next_item = self.data_loader.get_data()
         # Iterate over batches
         for cur_it in tt:
-            image, mask, _, _ = sess.run(next_item)
+            image, mask, _, depth = sess.run(next_item)
             _, loss, acc = sess.run([self.train_op, self.loss_node, self.acc_node], feed_dict={self.training: True,
                                                                                                self.mask: mask,
-                                                                                               self.image: image})
+                                                                                               self.image: image,
+                                                                                               self.depth: depth})
             loss_per_epoch.update(loss)
             acc_per_epoch.update(acc)
 
@@ -83,10 +84,11 @@ class Trainer(BaseAgent):
 
         # Iterate over batches
         for cur_it in tt:
-            image, mask, _, _ = sess.run(next_item)
+            image, mask, _, depth = sess.run(next_item)
             loss, acc = sess.run([self.loss_node, self.acc_node], feed_dict={self.training: False,
                                                                              self.mask: mask,
-                                                                             self.image: image})
+                                                                             self.image: image,
+                                                                             self.depth: depth})
             loss_per_epoch.update(loss)
             acc_per_epoch.update(acc)
 

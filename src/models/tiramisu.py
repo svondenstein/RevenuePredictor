@@ -41,9 +41,11 @@ class Tiramisu:
             self.training = tf.placeholder(tf.bool, name='Training_flag')
             self.image = tf.placeholder(tf.float32, shape=[None, 101, 101, 1],name='input')
             self.mask = tf.placeholder(tf.int32, shape=[None, 101, 101, 1], name='label')
+            self.depth = tf.placeholder(tf.float32, shape = [None], name = 'depth')
         tf.add_to_collection('inputs', self.image)
         tf.add_to_collection('inputs', self.mask)
         tf.add_to_collection('inputs', self.training)
+        tf.add_to_collection('inputs', self.depth)        
 
         # Network architecture
         with tf.variable_scope('network'):
