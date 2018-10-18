@@ -110,7 +110,7 @@ class Tiramisu:
 
             # testing learning rate decay ~according to paper
             global_step = tf.Variable(0, trainable=False)
-            learning_rate = tf.train.exponential_decay(self.config['optimizer']['learning_rate'], global_step, 500, 0.95, staircase=True)
+            learning_rate = tf.train.exponential_decay(self.config['optimizer']['learning_rate'], global_step, 750, 0.95, staircase=True)
 
             self.optimizer = tf.train.AdamOptimizer(learning_rate)
             update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
