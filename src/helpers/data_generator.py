@@ -31,7 +31,7 @@ class DataGenerator:
         # Calculate the max number of iterations based on batch size
         self.num_iterations_test = self.test_size // self.config.batch_size if \
             self.config.validation_split != 0.0 else self.train_size // self.config.batch_size
-        self.num_iterations_train = (self.train_size // self.config.batch_size) * 2 if self.config.augment else self.train_size // self.config.batch_size
+        self.num_iterations_train = (self.train_size // self.config.batch_size) * 7 if self.config.augment else self.train_size // self.config.batch_size
         self.num_iterations_infer = self.infer_size // self.config.batch_size
 
         # Create tensors containing image paths
@@ -77,7 +77,7 @@ class DataGenerator:
         else:
             sess.run(self.infer_init_op)
 
-    # For merge:
+    # Get input methods for input and validation data
     def get_data(self):
         return self.data_iterator.get_next()
 
