@@ -55,13 +55,21 @@ def get_args():
                         type=float)
 
     parser.add_argument('-m', '--model_path',
-                        default='./models/tiramisu/',
+                        default='./checkpoints/',
                         help='Directory to save trained models')
 
     parser.add_argument('-mk', '--max_to_keep',
                         default=5,
                         help='Maximum number of models to save',
                         type=int)
+
+    parser.add_argument('-o', '--optimize',
+                        action='store_true',
+                        help='Perform model parameter optimization')
+
+    parser.add_argument('-op', '--optimizer_path',
+                        default='./optimizer/',
+                        help='Directory to save optimizer data')
 
     parser.add_argument('-p', '--prediction_path',
                         default='./predictions/',
@@ -83,14 +91,6 @@ def get_args():
                         default=0.25,
                         help='Validation split for training',
                         type=float)
-
-    parser.add_argument('-o', '--optimize',
-                        action='store_true',
-                        help='Perform model parameter optimization')
-
-    parser.add_argument('-op', '--optimizer_path',
-                        default='./optimizer/',
-                        help='Directory to save optimizer data')
 
     FLAGS = parser.parse_args()
     return FLAGS
