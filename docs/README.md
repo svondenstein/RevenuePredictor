@@ -7,6 +7,8 @@ Salt Deposit Identification in Python using Tensorflow
 
 This program identifies salt deposits by analyzing subsurface images. The network design is based on the FC-DenseNet103 network, outlined in the [One Hundred Layers Tiramisu](https://arxiv.org/pdf/1611.09326.pdf) paper. Additional optimizations are made to process depth data and improve masks, which are outlined below.
 
+This implementation achieved an accuracy of 83% (0.832 mean IoU) on the Kaggle public leaderboard. 
+
 ## Table of Contents
 
 [Data](#data)
